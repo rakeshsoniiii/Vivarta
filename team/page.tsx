@@ -6,6 +6,7 @@ import { FaFacebook, FaGithub, FaInstagram, FaLinkedinIn, FaTwitter } from "reac
 import { client, urlFor } from '../../sanity';
 import Link from "next/link";
 import 'animate.css';
+
 // Define the TeamMember interface
 interface TeamMember {
   _id: string;
@@ -24,44 +25,34 @@ function Team() {
     // Management Leads
     {
       _id: '1',
-      name: 'Shruti Shrivastava',
+      name: 'SHRUTI SHRIVASTAVA',
       designation: 'Management Lead',
       domain: 'Management',
       image: '/Shruti Shrivastava.JPEG',
-      linkedin: '',
       instagram: 'https://www.instagram.com/shrutishri04?utm_source=qr&igsh=NGZmd2JxbGxpaG44',
+      linkedin: 'https://www.linkedin.com/in/shruti-shrivastava-a10774288/?utm_source=share&utm_campaign=share_via&utm_content=profile&utm_medium=android_app',
       featured: true,
     },
-    // {
-    //   _id: '2',
-    //   name: 'Arijit Konar',
-    //   designation: 'Management Lead',
-    //   domain: 'Management',
-    //   image: '/Konar.jpg',
-    //   linkedin: 'https://www.linkedin.com/in/arijit-k-941128296/',
-    //   instagram: 'https://www.instagram.com/charybd1sss?igsh=NXQ4N3c5eWM3aWF0',
-    //   featured: true,
-    // },
     {
       _id: '3',
-      name: 'Hreetam Sengupta',
+      name: 'HREETAM SENGUPTA',
       designation: 'Management Lead',
       domain: 'Management',
       image: '/Hreetam Sengupta.JPEG',
-      linkedin: 'https://www.linkedin.com/in/tannishto-dasgupta-950965217/',
+      linkedin: 'https://www.linkedin.com/in/hreetam-sengupta-122739373/',
       instagram: 'https://www.instagram.com/_hreetam_07?igsh=MWl6Y240YTEzeGVidg%3D%3D',
       featured: true,
     },
-     {
-       _id: '4',
-       name: 'DIVYANSHI PRIYA',
-       designation: 'Management Lead',
-       domain: 'Management',
-       image: '/DIVYANSHI PRIYA.JPEG',
-       instagram: 'https://www.instagram.com/divyanshi_kaushik?igsh=MW5ldHVkY3ExMDE3cQ%3D%3D',
-       linkedin: 'https://www.linkedin.com/in/divyanshi-priya-730a6727b/',
+    {
+      _id: '4',
+      name: 'DIVYANSHI PRIYA',
+      designation: 'Management Lead',
+      domain: 'Management',
+      image: '/DIVYANSHI PRIYA.jpeg',
+      instagram: 'https://www.instagram.com/divyanshi_kaushik?igsh=MW5ldHVkY3ExMDE3cQ%3D%3D',
+      linkedin: 'https://www.linkedin.com/in/divyanshi-priya-730a6727b/',
       featured: true,
-     },
+    },
     {
       _id: '5',
       name: 'ARYAN CHETTRI',
@@ -94,153 +85,192 @@ function Team() {
       featured: false,
     },
 
-    // Domain Leads
+    // Domain Leads - Robotics
     {
-      _id: '8',
-      name: 'Anshuman Krishna Yadav',
-      designation: 'Domain Lead',
-      domain: 'Computing',
-      image: '/Anshuman.jpg',
-      instagram: 'https://www.instagram.com/saikatbhattacharya2?igsh=NTVsZ3hlc2NlYmJh',
-      linkedin: 'https://www.linkedin.com/in/saikat-bhattacharya-a52434263',
+      _id: '9',
+      name: 'RAKESH SONI',
+      designation: 'Robotics Lead',
+      domain: 'Robotics',
+      image: '/RAKESH SONI.PG',
+      instagram: 'https://www.instagram.com/rakeshsoniiii/',
+      linkedin: 'https://www.linkedin.com/in/rakeshsoniiii/',
       featured: false,
     },
     
     {
-      _id: '9',
-      name: 'Saikat Bhattacharya',
-      designation: 'Domain Lead',
-      domain: 'Computing',
-      image: '/Saikat.jpeg',
-      instagram: 'https://www.instagram.com/saikatbhattacharya2?igsh=NTVsZ3hlc2NlYmJh',
-      linkedin: 'https://www.linkedin.com/in/saikat-bhattacharya-a52434263',
+      _id: '19',
+      name: 'SHIBAM JOARDAR',
+      designation: 'Point of Contact',
+      domain: 'Robotics',
+      image: '/SHIBAM JOARDAR.jpeg',
+      linkedin: '',
+      instagram: 'https://www.instagram.com/shibamjoardar?igsh=MWdnbW9wdTljdW9uOQ%3D%3D',
       featured: false,
     },
+
+    // Domain Leads - Fun Events
     {
       _id: '10',
-      name: 'Somsuddha Basak',
+      name: 'DHRITIMAN SARKAR',
       designation: 'Domain Lead',
       domain: 'Fun Events',
-      image: '/Somsuddha.jpg',
+      image: '/DHRITIMAN SARKAR.jpeg',
+      linkedin: 'https://www.linkedin.com/authwall?trk=bf&trkInfo=AQH0HC9f0_FA5wAAAZ0Kh9-QadTxnkCS14uGizSlhhR4f4KeBMlKin9ycUUg35I1308U5K4vtQrixPgwbVNuArpg8PQI4zJMWGxcshr7LAcviBblPuGZvLKcCGBDrglbzaldtl0=&original_referer=&sessionRedirect=https%3A%2F%2Fwww.linkedin.com%2Fin%2Fdhritiman-sarkar-7861032b4%3Futm_source%3Dshare%26utm_campaign%3Dshare_via%26utm_content%3Dprofile%26utm_medium%3Dandroid_app',
+      instagram: 'https://www.instagram.com/dhriti2342?igsh=d3BvZWhua3JwZ21n',
+
       featured: false,
     },
     {
       _id: '11',
-      name: 'Vishal Kumar',
+      name: 'KRISHNA GOPAL BARIK',
       designation: 'Domain Lead',
       domain: 'Fun Events',
-      image: '/VishalK.jpg',
+      image: '/KRISHNA GOPAL BARIK.jpeg',
+      instagram: 'https://www.instagram.com/itz_krishna.x03?igsh=MTU3ZTVpZ3A2bjZtdg%3D%3D',
       featured: false,
     },
+
+    // Domain Leads - Gaming
     {
       _id: '12',
-      name: 'Aditya Basu',
+      name: 'SHRAYAN MISHRA',
       designation: 'Domain Lead',
       domain: 'Gaming',
-      image: '/AdityaCore.jpg',
+      image: '/SHRAYAN MISHRA.jpeg',
+      instagram: 'https://www.instagram.com/shrayan._.music?igsh=aWIzMGc3dnNhYm1o',
       featured: false,
     },
     {
       _id: '13',
-      name: 'Pritha Sarkar',
+      name: 'SUPRODIPTO DAS',
       designation: 'Domain Lead',
       domain: 'Gaming',
-      image: '/PrithaCore.jpg',
+      image: '/Suprodipto Das.jpeg',
+      instagram: 'https://www.instagram.com/sup_is_pro?igsh=MTFibjF4NW01aDFqZg%3D%3D',
       featured: false,
     },
+
+    // Domain Leads - Innovation and Management
     {
       _id: '14',
-      name: 'Aprajita Kumari',
+      name: 'SHAMARTHI BASU',
       designation: 'Domain Lead',
       domain: 'Innovation and Management',
-      image: '/Aprajita.jpg',
-      linkedin: 'https://www.linkedin.com/in/aprajita-kumari05/',
-      instagram: 'https://www.instagram.com/k_a__i_z_e_n?igsh=bXFhNjVwODE0dDZy',
+      image: '/SHAMARTHI BASU.jpeg',
+      linkedin: '',
+      instagram: 'https://www.instagram.com/_shamarthi_?igsh=ZTAzb3oxMHhqNjRr',
       featured: false,
     },
     {
       _id: '15',
-      name: 'Anusha Chakraborty',
-      designation: 'Domain Lead',
+      name: 'KHUSHI KUMARI',
+      designation: 'Point of Contact',
       domain: 'Innovation and Management',
-      image: '/Anusha.jpg',
+      image: '/KHUSHI KUMARI.jpeg',
+      instagram: 'https://www.instagram.com/khushi.__.s?igsh=aTU1N2ZpbGx0YmZ6',
       featured: false,
     },
+
+    // Domain Leads - Mechmania
     {
       _id: '16',
-      name: 'Debanjali Das',
+      name: 'DEBJIT PAUL',
       designation: 'Domain Lead',
       domain: 'Mechmania',
-      image: '/Debanjali.jpeg',
+      image: '/Debjit Paul.jpeg',
+      instagram: 'https://www.instagram.com/_pdeb.9304?igsh=MTl1dmJxaHdpN3NtaQ%3D%3D',
       featured: false,
     },
     {
       _id: '17',
-      name: 'Devrup Ghosh',
-      designation: 'Domain Lead',
-      domain: 'Mechmania',
-      image: '/Devrup.jpg',
-      featured: false,
-    },
-    {
-      _id: '18',
-      name: 'Rakesh Soni',
-      designation: 'Domain Lead',
-      domain: 'Robotics',
-      image: '/VishalT.jpg',
-      featured: false,
-    },
-    {
-      _id: '19',
-      name: 'Shibam joardar',
+      name: 'ARUNANGSHU HALDER',
       designation: 'Point of Contact',
-      domain: 'Robotics',
-      image: '/Triparna.jpg',
+      domain: 'Mechmania',
+      image: '/ARUNANGSHU HALDER.jpeg',
+      instagram: 'https://www.instagram.com/_mr_greyyy?igsh=MXFsYmdzMmkzeTVxMg%3D%3D',
       featured: false,
     },
+
+    // Domain Leads - Designing
     {
       _id: '20',
-      name: 'Trambak Ganguly',
-      designation: 'Domain POC',
+      name: 'ZAYDAN ASAD',
+      designation: 'Point of Contact',
       domain: 'Designing',
-      image: '/Trambak.jpg',
+      image: '/Zaydan Asad.jpeg',
+      instagram: 'https://www.instagram.com/jet__skiii?igsh=c21hemV6MTRhb3I0',
       featured: false,
     },
     {
-      _id: '21',
-      name: 'Shreyosee Dhar',
-      designation: 'Domain POC',
-      domain: 'Public & Relations',
-      image: '/Shreyosee.jpg',
+      _id: '20.1',
+      name: 'SAYAK PAUL',
+      designation: 'Point of Contact',
+      domain: 'Designing',
+      image: '/SAYAK PAUL.jpeg',
+      instagram: 'https://www.instagram.com/alor_filament_?igsh=YzN3c3NvODlnemNy',
       featured: false,
     },
+
+    // Domain Leads - Public & Relations
+    {
+      _id: '21',
+      name: 'SHREYOSEE DHAR',
+      designation: 'Domain Lead',
+      domain: 'Public & Relations',
+      image: '/Shreyosee.jpg',
+      instagram: 'https://www.instagram.com/paintmyclouds?igsh=Y2Z1NHdjZTVjZm15',
+      featured: false,
+    },
+    {
+      _id: '21.1',
+      name: 'RAUNAK DUTTA',
+      designation: 'Point of Contact',
+      domain: 'Public & Relations',
+      image: '/RAUNAK DUTTA.jpeg',
+      instagram: 'https://www.instagram.com/raunak_dutta10?igsh=OTdweW11Mzh3OWc0',
+      featured: false,
+    },
+
+    // Domain Leads - Computing 
+    
+    {
+      _id: '25',
+      name: 'ADARSH GUPTA',
+      designation: 'Point of Contact',
+      domain: 'Computing',
+      image: '/ADARSH GUPTA.jpeg',
+      instagram: 'https://www.instagram.com/aaryan._.khan?igsh=M2JmZjNjZDk4YQ%3D%3D',
+      featured: false,
+    },
+   
   ];
 
   const CoreTeams: TeamMember[] = [
     {
       _id: '21',
-      name: 'Aaranya Ghoshal',
+      name: 'OLIVIA SAHA',
       designation: 'Member',
       domain: 'Core Team',
-      image: '/Aranhya.jpeg',
+      image: '/Olivia Saha.jpeg',
+      instagram: 'https://www.instagram.com/olivia_saha_03?igsh=MXF5NnV0ejR5bm41ZQ%3D%3D',
       featured: false,
     },
     {
       _id: '22',
-      name: 'Tripti Gupta',
+      name: 'DEBASISH CHOWDHURY',
       designation: 'Member',
       domain: 'Core Team',
-      image: '/Tripti.jpg',
+      image: '/Debasish Chowdhury.jpeg',
+      instagram: 'https://www.instagram.com/debasish.chowdhury.3367174?igsh=ejhzeHRod2M4ZHdk',
       featured: false,
     },
     {
       _id: '23',
-      name: 'Ankit Agarwal',
+      name: 'RAJ KUMAR',
       designation: 'Member',
       domain: 'Core Team',
-      image: '/Ankit.jpg',
-      instagram: " https://www.instagram.com/wwhodisdude/",
-      linkedin: 'https://www.linkedin.com/in/ankit-agarwal-52552b237',
+      image: '/RAJ KUMARR.jpeg',
+      instagram: "https://www.instagram.com/raaaaj.k?igsh=Z2YwNzAya3h4bDFv",
       featured: false,
     },
     {
@@ -357,53 +387,21 @@ function Team() {
       image: '/Istuti.jpeg',
       featured: false,
     },
-];
+  ];
 
-
+  // Filter Management and Executive Leads
   const managementLeads = teams.filter(member => member.domain === 'Management');
   const executiveLeads = teams.filter(member => member.domain === 'Executive');
-  const computingLeads = teams.filter(member => member.domain === 'Computing');
+  
+  // Filter all domain leads separately
+  const roboticsLeads = teams.filter(member => member.domain === 'Robotics');
   const funEventsLeads = teams.filter(member => member.domain === 'Fun Events');
   const gamingLeads = teams.filter(member => member.domain === 'Gaming');
   const innovationAndManagementLeads = teams.filter(member => member.domain === 'Innovation and Management');
   const mechmaniaLeads = teams.filter(member => member.domain === 'Mechmania');
-  const roboticsLeads = teams.filter(member => member.domain === 'Robotics');
   const designingLeads = teams.filter(member => member.domain === 'Designing');
   const publicRelationsLeads = teams.filter(member => member.domain === 'Public & Relations');
-  const allDomainLeads = [
-    ...computingLeads,
-    ...funEventsLeads,
-    ...gamingLeads,
-    ...innovationAndManagementLeads,
-    ...mechmaniaLeads,
-    ...roboticsLeads,
-    ...designingLeads,
-    ...publicRelationsLeads,
-  ];
-  
-
-
-  // const [team, setTeam] = useState<TeamMember[]>([]);
-
-  // useEffect(() => {
-  //   const query = '*[_type == "team"]';
-  //   client.fetch<TeamMember[]>(query)
-  //     .then((data: TeamMember[]) => setTeam(data))
-  //     .catch((error) => console.error('Error fetching team data:', error));
-  // }, []);
-
-  // Filter team members by designation
-  // const domainLeads = team.filter((teamMember) => teamMember.designation === 'Domain Lead');
-  // const technicalLeads = team.filter((teamMember) => teamMember.designation === 'Technical Lead');
-  // const managementLeads = team.filter((teamMember) => teamMember.designation === 'Management Lead');
-  // const coreTeamMembers = team.filter((teamMember) => teamMember.designation === 'Member - Core Team');
-  // const executiveTeam = team.filter((teamMember) => teamMember.designation === 'Executive Team');
-
-  // const featuredDomainLeads = domainLeads.filter((teamMember) => teamMember.featured);
-  // const featuredTechnicalLeads = technicalLeads.filter((teamMember) => teamMember.featured);
-  // const featuredManagementLeads = managementLeads.filter((teamMember) => teamMember.featured);
-  // const featuredCoreTeamMembers = coreTeamMembers.filter((teamMember) => teamMember.featured);
-  // const featuredExecutiveTeam = executiveTeam.filter((teamMember) => teamMember.featured);
+  const computingLeads = teams.filter(member => member.domain === 'Computing');
 
   return (
     <div>
@@ -418,12 +416,13 @@ function Team() {
               At the helm of Techno Vivarta, you&apos;ll find our invaluable core team — a dedicated group of individuals who serve as the driving force behind our community&apos;s growth and success. With a shared passion for technology and innovation, they provide the leadership and inspiration needed to navigate the ever-evolving tech landscape, ensuring that Techno Vivarta remains a thriving hub for aspiring technocrats and tech enthusiasts alike.
             </p>
           </div>
+          
           <h3 className="mb-9 text-center text-3xl font-extrabold leading-tight">Meet our Leads</h3>
 
+          {/* Management Leads Section */}
           <h4 className="mb-9 text-center text-xl font-extrabold leading-tight">Management Leads</h4>
-          <div className="animate__animated animate__fadeIn team-row mb-6">
-
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 mt-6">
+          <div className="animate__animated animate__fadeIn team-row mb-12">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-3 lg:grid-cols-4">
               {managementLeads.map((teamMember) => (
                 <Card key={teamMember._id} className="flex flex-col items-center justify-center">
                   <CardHeader>
@@ -476,205 +475,453 @@ function Team() {
             </div>
           </div>
 
-
+          {/* Executive Leads Section */}
           <h4 className="mb-9 text-center text-xl font-extrabold leading-tight">Executive Leads</h4>
-        <div className="animate__animated animate__fadeIn team-row mb-6">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            {executiveLeads.map((teamMember) => (
-              <Card key={teamMember._id} className="flex flex-col items-center justify-center">
-                <CardHeader>
-                  <Image
-                    src={teamMember.image} 
-                    alt={teamMember.name}
-                    className="h-[200px] w-[200px] overflow-hidden rounded-full"
-                    style={{ objectFit: "cover", objectPosition: "center" }}
-                    width={200}
-                    height={200}
-                  />
-                </CardHeader>
-                <CardContent className="flex flex-col items-center justify-center text-center">
-                  <div>
-                    <h4 className="text-lg font-semibold">{teamMember.name}</h4>
-                    <p className="text-sm text-gray-600">{teamMember.designation}</p>
-                  </div>
-                  <div className="mt-3 flex gap-3">
-                    {teamMember.linkedin && (
-                      <Link href={teamMember.linkedin}
-                        target="_blank" rel="noopener noreferrer"
-                      >
-                        <FaLinkedinIn size={20} />
-                      </Link>
-                    )}
-                    {teamMember.facebook && (
-                      <Link href={teamMember.facebook}
-                        target="_blank" rel="noopener noreferrer"
-                      >
-                        <FaFacebook size={20} />
-                      </Link>
-                    )}
-                    {teamMember.instagram && (
-                      <Link href={teamMember.instagram}
-                        target="_blank" rel="noopener noreferrer">
-                        <FaInstagram size={20} />
-                      </Link>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
+          <div className="animate__animated animate__fadeIn team-row mb-12">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+              {executiveLeads.map((teamMember) => (
+                <Card key={teamMember._id} className="flex flex-col items-center justify-center">
+                  <CardHeader>
+                    <Image
+                      src={teamMember.image} 
+                      alt={teamMember.name}
+                      className="h-[200px] w-[200px] overflow-hidden rounded-full"
+                      style={{ objectFit: "cover", objectPosition: "center" }}
+                      width={200}
+                      height={200}
+                    />
+                  </CardHeader>
+                  <CardContent className="flex flex-col items-center justify-center text-center">
+                    <div>
+                      <h4 className="text-lg font-semibold">{teamMember.name}</h4>
+                      <p className="text-sm text-gray-600">{teamMember.designation}</p>
+                    </div>
+                    <div className="mt-3 flex gap-3">
+                      {teamMember.linkedin && (
+                        <Link href={teamMember.linkedin}
+                          target="_blank" rel="noopener noreferrer"
+                        >
+                          <FaLinkedinIn size={20} />
+                        </Link>
+                      )}
+                      {teamMember.facebook && (
+                        <Link href={teamMember.facebook}
+                          target="_blank" rel="noopener noreferrer"
+                        >
+                          <FaFacebook size={20} />
+                        </Link>
+                      )}
+                      {teamMember.instagram && (
+                        <Link href={teamMember.instagram}
+                          target="_blank" rel="noopener noreferrer">
+                          <FaInstagram size={20} />
+                        </Link>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
           </div>
-        </div>
 
-        <h4 className="mb-9 text-center text-xl font-extrabold leading-tight">Domain Leads</h4>
-        <div className="animate__animated animate__fadeIn team-row mb-6">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            {allDomainLeads.map((teamMember) => (
-              <Card key={teamMember._id} className="flex flex-col items-center justify-center">
-                <CardHeader>
-                  <Image
-                    src={teamMember.image} 
-                    alt={teamMember.name}
-                    className="h-[200px] w-[200px] overflow-hidden rounded-full"
-                    style={{ objectFit: "cover", objectPosition: "center" }}
-                    width={200}
-                    height={200}
-                  />
-                </CardHeader>
-                <CardContent className="flex flex-col items-center justify-center text-center">
-                  <div>
-                    <h4 className="text-lg font-semibold">{teamMember.name}</h4>
-                    <p className="text-sm text-gray-600">{teamMember.designation} - { teamMember.domain }</p>
-                  </div>
-                  <div className="mt-3 flex gap-3">
-                    {teamMember.linkedin && (
-                      <Link href={teamMember.linkedin}
-                        target="_blank" rel="noopener noreferrer"
-                      >
-                        <FaLinkedinIn size={20} />
-                      </Link>
-                    )}
-                    {teamMember.facebook && (
-                      <Link href={teamMember.facebook}
-                        target="_blank" rel="noopener noreferrer"
-                      >
-                        <FaFacebook size={20} />
-                      </Link>
-                    )}
-                    {teamMember.instagram && (
-                      <Link href={teamMember.instagram}
-                        target="_blank" rel="noopener noreferrer">
-                        <FaInstagram size={20} />
-                      </Link>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div>
+          {/* Domain Leads Sections - Each domain separately */}
+          <h4 className="mb-9 text-center text-xl font-extrabold leading-tight">Domain Leads</h4>
+          
+          {/* Robotics Section */}
+          {roboticsLeads.length > 0 && (
+            <>
+              <h5 className="mb-6 text-center text-lg font-bold text-blue-600">Robotics</h5>
+              <div className="animate__animated animate__fadeIn team-row mb-12">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {roboticsLeads.map((teamMember) => (
+                    <Card key={teamMember._id} className="flex flex-col items-center justify-center">
+                      <CardHeader>
+                        <Image
+                          src={teamMember.image} 
+                          alt={teamMember.name}
+                          className="h-[200px] w-[200px] overflow-hidden rounded-full"
+                          style={{ objectFit: "cover", objectPosition: "center" }}
+                          width={200}
+                          height={200}
+                        />
+                      </CardHeader>
+                      <CardContent className="flex flex-col items-center justify-center text-center">
+                        <div>
+                          <h4 className="text-lg font-semibold">{teamMember.name}</h4>
+                          <p className="text-sm text-gray-600">{teamMember.designation}</p>
+                        </div>
+                        <div className="mt-3 flex gap-3">
+                          {teamMember.linkedin && (
+                            <Link href={teamMember.linkedin} target="_blank" rel="noopener noreferrer">
+                              <FaLinkedinIn size={20} />
+                            </Link>
+                          )}
+                          {teamMember.instagram && (
+                            <Link href={teamMember.instagram} target="_blank" rel="noopener noreferrer">
+                              <FaInstagram size={20} />
+                            </Link>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
 
-        {/* <h3 className="mb-9 text-center text-3xl font-extrabold leading-tight">Meet our Executive Team</h3>
-        <div className="animate__animated animate__fadeIn team-row mb-6">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            {featuredExecutiveTeam.map((teamMember) => (
-              <Card key={teamMember._id} className="flex flex-col items-center justify-center">
-                <CardHeader>
-                  <Image
-                    src={urlFor(teamMember.image).url()} 
-                    alt={teamMember.name}
-                    className="h-[200px] w-[200px] overflow-hidden rounded-full"
-                    style={{ objectFit: "cover", objectPosition: "center" }}
-                    width={200}
-                    height={200}
-                  />
-                </CardHeader>
-                <CardContent className="flex flex-col items-center justify-center text-center">
-                  <div>
-                    <h4 className="text-lg font-semibold">{teamMember.name}</h4>
-                    <p className="text-sm text-gray-600">{ teamMember.domain }, {teamMember.designation}</p>
-                  </div>
-                  <div className="mt-3 flex gap-3">
-                    {teamMember.linkedin && (
-                      <Link href={teamMember.linkedin}
-                        target="_blank" rel="noopener noreferrer"
-                      >
-                        <FaLinkedinIn size={20} />
-                      </Link>
-                    )}
-                    {teamMember.facebook && (
-                      <Link href={teamMember.facebook}
-                        target="_blank" rel="noopener noreferrer"
-                      >
-                        <FaFacebook size={20} />
-                      </Link>
-                    )}
-                    {teamMember.instagram && (
-                      <Link href={teamMember.instagram}
-                        target="_blank" rel="noopener noreferrer">
-                        <FaInstagram size={20} />
-                      </Link>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div> */}
+          {/* Fun Events Section */}
+          {funEventsLeads.length > 0 && (
+            <>
+              <h5 className="mb-6 text-center text-lg font-bold text-green-600">Fun Events</h5>
+              <div className="animate__animated animate__fadeIn team-row mb-12">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {funEventsLeads.map((teamMember) => (
+                    <Card key={teamMember._id} className="flex flex-col items-center justify-center">
+                      <CardHeader>
+                        <Image
+                          src={teamMember.image} 
+                          alt={teamMember.name}
+                          className="h-[200px] w-[200px] overflow-hidden rounded-full"
+                          style={{ objectFit: "cover", objectPosition: "center" }}
+                          width={200}
+                          height={200}
+                        />
+                      </CardHeader>
+                      <CardContent className="flex flex-col items-center justify-center text-center">
+                        <div>
+                          <h4 className="text-lg font-semibold">{teamMember.name}</h4>
+                          <p className="text-sm text-gray-600">{teamMember.designation}</p>
+                        </div>
+                        <div className="mt-3 flex gap-3">
+                          {teamMember.linkedin && (
+                            <Link href={teamMember.linkedin} target="_blank" rel="noopener noreferrer">
+                              <FaLinkedinIn size={20} />
+                            </Link>
+                          )}
+                          {teamMember.instagram && (
+                            <Link href={teamMember.instagram} target="_blank" rel="noopener noreferrer">
+                              <FaInstagram size={20} />
+                            </Link>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
 
-        <h3 className="mb-9 text-center text-3xl font-extrabold leading-tight">Meet our Core Team</h3>
-        <div className="animate__animated animate__fadeIn team-row mb-6">
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            {CoreTeams.map((teamMember) => (
-              <Card key={teamMember._id} className="flex flex-col items-center justify-center">
-                <CardHeader>
-                  <Image
-                    src={teamMember.image} 
-                    alt={teamMember.name}
-                    className="h-[200px] w-[200px] overflow-hidden rounded-full"
-                    style={{ objectFit: "cover", objectPosition: "center" }}
-                    width={200}
-                    height={200}
-                  />
-                </CardHeader>
-                <CardContent className="flex flex-col items-center justify-center text-center">
-                  <div>
-                    <h4 className="text-lg font-semibold">{teamMember.name}</h4>
-                    <p className="text-sm text-gray-600">{teamMember.designation} - { teamMember.domain }</p>
-                  </div>
-                  <div className="mt-3 flex gap-3">
-                    {teamMember.linkedin && (
-                      <Link href={teamMember.linkedin}
-                        target="_blank" rel="noopener noreferrer"
-                      >
-                        <FaLinkedinIn size={20} />
-                      </Link>
-                    )}
-                    {teamMember.facebook && (
-                      <Link href={teamMember.facebook}
-                        target="_blank" rel="noopener noreferrer"
-                      >
-                        <FaFacebook size={20} />
-                      </Link>
-                    )}
-                    {teamMember.instagram && (
-                      <Link href={teamMember.instagram}
-                        target="_blank" rel="noopener noreferrer">
-                        <FaInstagram size={20} />
-                      </Link>
-                    )}
-                  </div>
-                </CardContent>
-              </Card>
-            ))}
-          </div>
-        </div> 
+          {/* Gaming Section */}
+          {gamingLeads.length > 0 && (
+            <>
+              <h5 className="mb-6 text-center text-lg font-bold text-purple-600">Gaming</h5>
+              <div className="animate__animated animate__fadeIn team-row mb-12">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {gamingLeads.map((teamMember) => (
+                    <Card key={teamMember._id} className="flex flex-col items-center justify-center">
+                      <CardHeader>
+                        <Image
+                          src={teamMember.image} 
+                          alt={teamMember.name}
+                          className="h-[200px] w-[200px] overflow-hidden rounded-full"
+                          style={{ objectFit: "cover", objectPosition: "center" }}
+                          width={200}
+                          height={200}
+                        />
+                      </CardHeader>
+                      <CardContent className="flex flex-col items-center justify-center text-center">
+                        <div>
+                          <h4 className="text-lg font-semibold">{teamMember.name}</h4>
+                          <p className="text-sm text-gray-600">{teamMember.designation}</p>
+                        </div>
+                        <div className="mt-3 flex gap-3">
+                          {teamMember.linkedin && (
+                            <Link href={teamMember.linkedin} target="_blank" rel="noopener noreferrer">
+                              <FaLinkedinIn size={20} />
+                            </Link>
+                          )}
+                          {teamMember.instagram && (
+                            <Link href={teamMember.instagram} target="_blank" rel="noopener noreferrer">
+                              <FaInstagram size={20} />
+                            </Link>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
 
-          {/* Render other sections (Technical Leads, Management Leads, Core Team) similarly */}
+          {/* Innovation and Management Section */}
+          {innovationAndManagementLeads.length > 0 && (
+            <>
+              <h5 className="mb-6 text-center text-lg font-bold text-orange-600">Innovation and Management</h5>
+              <div className="animate__animated animate__fadeIn team-row mb-12">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {innovationAndManagementLeads.map((teamMember) => (
+                    <Card key={teamMember._id} className="flex flex-col items-center justify-center">
+                      <CardHeader>
+                        <Image
+                          src={teamMember.image} 
+                          alt={teamMember.name}
+                          className="h-[200px] w-[200px] overflow-hidden rounded-full"
+                          style={{ objectFit: "cover", objectPosition: "center" }}
+                          width={200}
+                          height={200}
+                        />
+                      </CardHeader>
+                      <CardContent className="flex flex-col items-center justify-center text-center">
+                        <div>
+                          <h4 className="text-lg font-semibold">{teamMember.name}</h4>
+                          <p className="text-sm text-gray-600">{teamMember.designation}</p>
+                        </div>
+                        <div className="mt-3 flex gap-3">
+                          {teamMember.linkedin && (
+                            <Link href={teamMember.linkedin} target="_blank" rel="noopener noreferrer">
+                              <FaLinkedinIn size={20} />
+                            </Link>
+                          )}
+                          {teamMember.instagram && (
+                            <Link href={teamMember.instagram} target="_blank" rel="noopener noreferrer">
+                              <FaInstagram size={20} />
+                            </Link>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
 
+          {/* Mechmania Section */}
+          {mechmaniaLeads.length > 0 && (
+            <>
+              <h5 className="mb-6 text-center text-lg font-bold text-red-600">Mechmania</h5>
+              <div className="animate__animated animate__fadeIn team-row mb-12">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {mechmaniaLeads.map((teamMember) => (
+                    <Card key={teamMember._id} className="flex flex-col items-center justify-center">
+                      <CardHeader>
+                        <Image
+                          src={teamMember.image} 
+                          alt={teamMember.name}
+                          className="h-[200px] w-[200px] overflow-hidden rounded-full"
+                          style={{ objectFit: "cover", objectPosition: "center" }}
+                          width={200}
+                          height={200}
+                        />
+                      </CardHeader>
+                      <CardContent className="flex flex-col items-center justify-center text-center">
+                        <div>
+                          <h4 className="text-lg font-semibold">{teamMember.name}</h4>
+                          <p className="text-sm text-gray-600">{teamMember.designation}</p>
+                        </div>
+                        <div className="mt-3 flex gap-3">
+                          {teamMember.linkedin && (
+                            <Link href={teamMember.linkedin} target="_blank" rel="noopener noreferrer">
+                              <FaLinkedinIn size={20} />
+                            </Link>
+                          )}
+                          {teamMember.instagram && (
+                            <Link href={teamMember.instagram} target="_blank" rel="noopener noreferrer">
+                              <FaInstagram size={20} />
+                            </Link>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Designing Section */}
+          {designingLeads.length > 0 && (
+            <>
+              <h5 className="mb-6 text-center text-lg font-bold text-pink-600">Designing</h5>
+              <div className="animate__animated animate__fadeIn team-row mb-12">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {designingLeads.map((teamMember) => (
+                    <Card key={teamMember._id} className="flex flex-col items-center justify-center">
+                      <CardHeader>
+                        <Image
+                          src={teamMember.image} 
+                          alt={teamMember.name}
+                          className="h-[200px] w-[200px] overflow-hidden rounded-full"
+                          style={{ objectFit: "cover", objectPosition: "center" }}
+                          width={200}
+                          height={200}
+                        />
+                      </CardHeader>
+                      <CardContent className="flex flex-col items-center justify-center text-center">
+                        <div>
+                          <h4 className="text-lg font-semibold">{teamMember.name}</h4>
+                          <p className="text-sm text-gray-600">{teamMember.designation}</p>
+                        </div>
+                        <div className="mt-3 flex gap-3">
+                          {teamMember.linkedin && (
+                            <Link href={teamMember.linkedin} target="_blank" rel="noopener noreferrer">
+                              <FaLinkedinIn size={20} />
+                            </Link>
+                          )}
+                          {teamMember.instagram && (
+                            <Link href={teamMember.instagram} target="_blank" rel="noopener noreferrer">
+                              <FaInstagram size={20} />
+                            </Link>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Public & Relations Section */}
+          {publicRelationsLeads.length > 0 && (
+            <>
+              <h5 className="mb-6 text-center text-lg font-bold text-teal-600">Public & Relations</h5>
+              <div className="animate__animated animate__fadeIn team-row mb-12">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {publicRelationsLeads.map((teamMember) => (
+                    <Card key={teamMember._id} className="flex flex-col items-center justify-center">
+                      <CardHeader>
+                        <Image
+                          src={teamMember.image} 
+                          alt={teamMember.name}
+                          className="h-[200px] w-[200px] overflow-hidden rounded-full"
+                          style={{ objectFit: "cover", objectPosition: "center" }}
+                          width={200}
+                          height={200}
+                        />
+                      </CardHeader>
+                      <CardContent className="flex flex-col items-center justify-center text-center">
+                        <div>
+                          <h4 className="text-lg font-semibold">{teamMember.name}</h4>
+                          <p className="text-sm text-gray-600">{teamMember.designation}</p>
+                        </div>
+                        <div className="mt-3 flex gap-3">
+                          {teamMember.linkedin && (
+                            <Link href={teamMember.linkedin} target="_blank" rel="noopener noreferrer">
+                              <FaLinkedinIn size={20} />
+                            </Link>
+                          )}
+                          {teamMember.instagram && (
+                            <Link href={teamMember.instagram} target="_blank" rel="noopener noreferrer">
+                              <FaInstagram size={20} />
+                            </Link>
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+          {/* Computing Section */}
+          {computingLeads.length > 0 && (
+            <>
+              <h5 className="mb-6 text-center text-lg font-bold text-blue-600">Computing</h5>
+              <div className="animate__animated animate__fadeIn team-row mb-12">
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                  {computingLeads.map((teamMember) => (
+                    <Card key={teamMember._id} className="flex flex-col items-center justify-center">
+                      <CardHeader>
+                        <Image
+                          src={teamMember.image} 
+                          alt={teamMember.name}
+                          className="h-[200px] w-[200px] overflow-hidden rounded-full"
+                          style={{ objectFit: "cover", objectPosition: "center" }}
+                          width={200}
+                          height={200}
+                        />
+                      </CardHeader>
+                      <CardContent className="flex flex-col items-center justify-center text-center">
+                        <div>
+                          <h4 className="text-lg font-semibold">{teamMember.name}</h4>
+                          <p className="text-sm text-gray-600">{teamMember.designation}</p>
+                        </div>
+                        <div className="mt-3 flex gap-3">
+                          {teamMember.linkedin && (
+                            <Link href={teamMember.linkedin} target="_blank" rel="noopener noreferrer">
+                              <FaLinkedinIn size={20} />
+                            </Link>
+                          )}
+                          {teamMember.instagram && (
+                            <Link href={teamMember.instagram} target="_blank" rel="noopener noreferrer">
+                              <FaInstagram size={20} />
+                            </Link>
+
+                          )}
+                        </div>
+                      </CardContent>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </>
+          )}
+
+          {/* Core Team Section */}
+          <h3 className="mb-9 text-center text-3xl font-extrabold leading-tight">Meet our Core Team</h3>
+          <div className="animate__animated animate__fadeIn team-row mb-6">
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+              {CoreTeams.map((teamMember) => (
+                <Card key={teamMember._id} className="flex flex-col items-center justify-center">
+                  <CardHeader>
+                    <Image
+                      src={teamMember.image} 
+                      alt={teamMember.name}
+                      className="h-[200px] w-[200px] overflow-hidden rounded-full"
+                      style={{ objectFit: "cover", objectPosition: "center" }}
+                      width={200}
+                      height={200}
+                    />
+                  </CardHeader>
+                  <CardContent className="flex flex-col items-center justify-center text-center">
+                    <div>
+                      <h4 className="text-lg font-semibold">{teamMember.name}</h4>
+                      <p className="text-sm text-gray-600">{teamMember.designation} - {teamMember.domain}</p>
+                    </div>
+                    <div className="mt-3 flex gap-3">
+                      {teamMember.linkedin && (
+                        <Link href={teamMember.linkedin}
+                          target="_blank" rel="noopener noreferrer"
+                        >
+                          <FaLinkedinIn size={20} />
+                        </Link>
+                      )}
+                      {teamMember.facebook && (
+                        <Link href={teamMember.facebook}
+                          target="_blank" rel="noopener noreferrer"
+                        >
+                          <FaFacebook size={20} />
+                        </Link>
+                      )}
+                      {teamMember.instagram && (
+                        <Link href={teamMember.instagram}
+                          target="_blank" rel="noopener noreferrer">
+                          <FaInstagram size={20} />
+                        </Link>
+                      )}
+                    </div>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div> 
         </div>
       </section>
     </div>
-
   );
 }
 
