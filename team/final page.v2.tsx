@@ -181,6 +181,7 @@ function useTilt() {
   return ref;
 }
 
+
 function Counter({ end, label }: { end: number; label: string }) {
   const [val, setVal] = useState(0);
   const ref = useRef<HTMLDivElement>(null);
@@ -269,7 +270,7 @@ function Team() {
     { _id: '20', name: 'ZAYDAN ASAD', designation: 'Point of Contact', domain: 'Designing', image: '/Zaydan Asad.jpeg', instagram: 'https://www.instagram.com/jet__skiii', featured: false },
     { _id: '20.1', name: 'SAYAK PAUL', designation: 'Point of Contact', domain: 'Designing', image: '/SAYAK PAUL.jpeg', instagram: 'https://www.instagram.com/alor_filament_', featured: false },
     { _id: '21', name: 'SHREYOSEE DHAR', designation: 'Domain Lead', domain: 'Public & Relations', image: '/Shreyosee.jpg', instagram: 'https://www.instagram.com/paintmyclouds', featured: false },
-    { _id: '21.1', name: 'RAUNAK DUTTA', designation: 'Point of Contact', domain: 'Public & Relations', image: '/RAUNAK DUTTA.jpeg', instagram: 'https://www.instagram.com/raunak_dutta10', featured: false },
+    { _id: '21.1', name: 'RAUNAK DUTTA', designation: 'Domain Lead', domain: 'Public & Relations', image: '/RAUNAK DUTTA.jpeg', instagram: 'https://www.instagram.com/raunak_dutta10', featured: false },
     { _id: '25', name: 'ADARSH GUPTA', designation: 'Point of Contact', domain: 'Computing', image: '/ADARSH GUPTA.jpeg', instagram: 'https://www.instagram.com/aaryan._.khan', featured: false },
   ];
 
@@ -288,7 +289,7 @@ function Team() {
 
   return (
     <>
-      <style>{styles}</style>
+      <style dangerouslySetInnerHTML={{ __html: styles }} />
       <div className="tv-section">
         <div className="tv-bg-grid" />
         <div className="tv-orb tv-orb-1" />
@@ -306,13 +307,7 @@ function Team() {
             </p>
           </div>
 
-          {/* STATS */}
-          <div ref={statsRef} className="rv tv-stats">
-            <Counter end={27} label="Team Members" />
-            <Counter end={8} label="Domains" />
-            <Counter end={6} label="Core Members" />
-            <Counter end={1} label="Vision" />
-          </div>
+
 
           {/* LEADS */}
           <div ref={useReveal(.08)} className="rv-s sec-wrap">
