@@ -5,7 +5,67 @@ import Image from "next/image"
 import Link from "next/link"
 import { BiTime } from "react-icons/bi"
 import { MdOutlineLocationOn } from "react-icons/md"
-import { HiArrowRight } from "react-icons/hi"
+import { HiArrowRight, HiMenuAlt3, HiX } from "react-icons/hi"
+
+// ─── Tubes cursor animation (Three.js) ───────────────────────────────────────
+function HeroCanvas() {
+  const canvasRef = useRef<HTMLCanvasElement>(null)
+  const appRef = useRef<any>(null)
+  const palIdx = useRef(0)
+
+  const palettes = [
+    { tubes: ["#e11d48", "#f8fafc", "#9f1239"], lights: ["#e11d48", "#ff4d6d", "#f8fafc", "#be123c"] },
+    { tubes: ["#ff1a4b", "#ffffff", "#c0002a"], lights: ["#ff0033", "#ff6680", "#ffcccc", "#990022"] },
+    { tubes: ["#e11d48", "#ff6b8a", "#f8fafc"], lights: ["#ff0055", "#ff3366", "#ff99aa", "#cc0044"] },
+    { tubes: ["#be123c", "#f8fafc", "#e11d48"], lights: ["#dd0a3c", "#ff2255", "#ffaabb", "#aa0033"] },
+    { tubes: ["#ff2255", "#f8fafc", "#7f1d1d"], lights: ["#ff0044", "#ff4477", "#ffffff", "#cc0033"] },
+  ]
+
+  useEffect(() => {
+    const canvas = canvasRef.current
+    if (!canvas) return
+    let destroyed = false
+
+    // Dynamically import the CDN module
+    import(/* webpackIgnore: true */ "https://cdn.jsdelivr.net/npm/threejs-components@0.0.19/build/cursors/tubes1.min.js" as any)
+      .then((mod: any) => {
+        if (destroyed) return
+        const TubesCursor = mod.default ?? mod
+        appRef.current = TubesCursor(canvas, {
+          tubes: {
+            colors: palettes[0].tubes,
+            lights: { intensity: 220, colors: palettes[0].lights },
+          },
+        })
+      })
+      .catch(() => {/* silently ignore if CDN fails */ })
+
+    return () => { destroyed = true }
+  }, [])
+
+  // Cycle palette on click anywhere in hero
+  const cyclePalette = () => {
+    palIdx.current = (palIdx.current + 1) % palettes.length
+    const p = palettes[palIdx.current]
+    if (appRef.current?.tubes) {
+      appRef.current.tubes.setColors(p.tubes)
+      appRef.current.tubes.setLightsColors(p.lights)
+    }
+  }
+
+  return (
+    <canvas
+      ref={canvasRef}
+      onClick={cyclePalette}
+      style={{
+        position: 'absolute', inset: 0,
+        width: '100%', height: '100%',
+        zIndex: 0, display: 'block',
+        cursor: 'none',
+      }}
+    />
+  )
+}
 
 const styles = `
   @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Rajdhani:wght@400;500;600;700&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap');
@@ -19,6 +79,110 @@ const styles = `
   }
 
   .hp-root { background:var(--black); color:var(--white); font-family:'DM Sans',sans-serif; overflow-x:hidden; }
+
+  /* ══════════════════════════════════
+     NAVBAR
+  ══════════════════════════════════ */
+  .nav {
+    position:fixed; top:0; left:0; right:0; z-index:200;
+    height:62px;
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 1.5rem;
+    background:rgba(8,8,8,.82);
+    backdrop-filter:blur(14px) saturate(.7);
+    border-bottom:1px solid rgba(255,255,255,.06);
+    transition:background .3s ease;
+  }
+
+  .nav-logo {
+    font-family:'Bebas Neue',sans-serif; font-size:1.5rem; letter-spacing:.08em;
+    color:var(--white); text-decoration:none; display:flex; align-items:center; gap:8px;
+  }
+  .nav-logo span { color:var(--red); }
+
+  /* Desktop links */
+  .nav-links {
+    display:flex; align-items:center; gap:2rem;
+  }
+  .nav-link {
+    font-family:'Rajdhani',sans-serif; font-size:.8rem; font-weight:700;
+    letter-spacing:.16em; text-transform:uppercase;
+    color:var(--white-muted); text-decoration:none;
+    transition:color .22s ease;
+    position:relative;
+  }
+  .nav-link::after {
+    content:''; position:absolute; bottom:-3px; left:0; right:0; height:1px;
+    background:var(--red); transform:scaleX(0); transform-origin:left;
+    transition:transform .22s ease;
+  }
+  .nav-link:hover { color:var(--white); }
+  .nav-link:hover::after { transform:scaleX(1); }
+  .nav-link.active { color:var(--red); }
+  .nav-link.active::after { transform:scaleX(1); }
+
+  /* CTA button in nav */
+  .nav-cta {
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.78rem;
+    letter-spacing:.14em; text-transform:uppercase; text-decoration:none;
+    padding:8px 20px; border-radius:8px;
+    background:var(--red); color:#fff; border:1px solid var(--red);
+    transition:transform .2s ease, box-shadow .2s ease, background .2s ease;
+  }
+  .nav-cta:hover { transform:translateY(-2px); box-shadow:0 8px 22px var(--red-glow); background:#c91a3f; }
+
+  /* Hamburger button */
+  .nav-burger {
+    display:none; align-items:center; justify-content:center;
+    width:40px; height:40px; border-radius:8px; cursor:pointer;
+    background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+    color:var(--white); transition:background .22s ease, border-color .22s ease;
+  }
+  .nav-burger:hover { background:rgba(225,29,72,.18); border-color:rgba(225,29,72,.4); }
+
+  /* Mobile drawer */
+  .nav-drawer {
+    position:fixed; top:62px; left:0; right:0; bottom:0; z-index:199;
+    background:rgba(8,8,8,.97);
+    backdrop-filter:blur(20px);
+    display:flex; flex-direction:column;
+    padding:2rem 1.5rem 3rem;
+    transform:translateX(100%);
+    transition:transform .4s cubic-bezier(.22,1,.36,1);
+    border-top:1px solid rgba(255,255,255,.06);
+  }
+  .nav-drawer.open { transform:translateX(0); }
+
+  .nav-drawer-links { display:flex; flex-direction:column; gap:0; flex:1; }
+  .nav-drawer-link {
+    font-family:'Bebas Neue',sans-serif; font-size:2.2rem; letter-spacing:.05em;
+    color:var(--white-dim); text-decoration:none;
+    padding:1rem 0; border-bottom:1px solid rgba(255,255,255,.06);
+    display:flex; align-items:center; justify-content:space-between;
+    transition:color .22s ease;
+  }
+  .nav-drawer-link:hover { color:var(--red); }
+  .nav-drawer-link svg { opacity:.4; transition:opacity .22s ease, transform .22s ease; }
+  .nav-drawer-link:hover svg { opacity:1; transform:translateX(4px); }
+
+  .nav-drawer-footer {
+    margin-top:2rem; padding-top:1.5rem; border-top:1px solid rgba(255,255,255,.06);
+  }
+  .nav-drawer-cta {
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.88rem; letter-spacing:.14em; text-transform:uppercase;
+    padding:13px 28px; border-radius:10px; text-decoration:none;
+    background:var(--red); color:#fff; border:1px solid var(--red);
+  }
+
+  @media(max-width:768px){
+    .nav-links { display:none; }
+    .nav-cta { display:none; }
+    .nav-burger { display:flex; }
+  }
+
+  /* Body lock when drawer open */
+  body.nav-locked { overflow:hidden; }
 
   /* ── Background ── */
   .hp-bg-grid {
@@ -57,30 +221,62 @@ const styles = `
     position:relative; z-index:1;
     min-height:100vh;
     display:flex; flex-direction:column; align-items:center; justify-content:center;
-    text-align:center; padding:0 1.25rem 5rem;
+    text-align:center; padding:62px 1.25rem 5rem;
     overflow:hidden;
+    /* canvas fills the hero; all children need pointer-events managed */
+    touch-action:none;
   }
 
-  /* Animated scanlines */
+  /* Red accent line at very top of hero (matches HTML version) */
+  .hero-top-bar {
+    position:absolute; top:0; left:0; right:0; height:2px; z-index:3; pointer-events:none;
+    background:linear-gradient(90deg,transparent,#e11d48 30%,#e11d48 70%,transparent);
+  }
+
+  /* Lift all text/buttons above the canvas */
+  .hero-eyebrow,
+  .hero-h1,
+  .hero-tagline,
+  .hero-ctas,
+  .hero-scroll { position:relative; z-index:3; pointer-events:auto; }
+
+  /* Canvas covers full hero as background */
+  .hero canvas { touch-action:none; }
+
+  /* Click hint — bottom right of hero */
+  .hero-click-hint {
+    position:absolute; bottom:28px; right:28px; z-index:3;
+    display:flex; align-items:center; gap:8px;
+    font-family:'Rajdhani',sans-serif; font-size:.6rem; font-weight:700;
+    letter-spacing:.2em; text-transform:uppercase; color:rgba(248,250,252,.22);
+    pointer-events:none;
+    animation:fadeUp .6s 1.2s cubic-bezier(.22,1,.36,1) both;
+  }
+  .hero-click-dot {
+    width:6px; height:6px; border-radius:50%; background:var(--red); flex-shrink:0;
+    animation:pulseDotAlt 2s ease-in-out infinite;
+  }
+  @keyframes pulseDotAlt { 0%,100%{opacity:.3} 50%{opacity:1} }
+  @media(max-width:600px){ .hero-click-hint{ display:none; } }
+
   .hero-scan {
-    position:absolute; inset:0; pointer-events:none; opacity:.45;
+    position:absolute; inset:0; pointer-events:none; opacity:.45; z-index:2;
     background:repeating-linear-gradient(0deg,transparent,transparent 3px,rgba(0,0,0,.05) 3px,rgba(0,0,0,.05) 6px);
     animation:scanMove 14s linear infinite;
   }
   @keyframes scanMove { from{background-position:0 0} to{background-position:0 120px} }
 
-  /* Pulsing rings */
   .hero-ring {
     position:absolute; border-radius:50%;
     top:50%; left:50%;
     pointer-events:none; animation:ringPulse 4s ease-in-out infinite;
+    z-index:2;
   }
   .hero-ring-1 { width:min(740px,92vw); height:min(740px,92vw); transform:translate(-50%,-54%); border:1px solid rgba(225,29,72,.13); }
   .hero-ring-2 { width:min(540px,72vw); height:min(540px,72vw); transform:translate(-50%,-54%); border:1px solid rgba(225,29,72,.08); animation-direction:reverse; }
   .hero-ring-3 { width:min(340px,52vw); height:min(340px,52vw); transform:translate(-50%,-54%); border:1px solid rgba(225,29,72,.06); animation-delay:.8s; }
   @keyframes ringPulse { 0%,100%{opacity:.6;scale:1} 50%{opacity:1;scale:1.032} }
 
-  /* Floating particles */
   .hero-particle {
     position:absolute; border-radius:50%; pointer-events:none;
     background:var(--red); opacity:0;
@@ -93,7 +289,6 @@ const styles = `
     100% { opacity:0; transform:translateY(-120px) scale(1.4); }
   }
 
-  /* Hero text */
   .hero-eyebrow {
     display:inline-flex; align-items:center; gap:10px;
     font-family:'Rajdhani',sans-serif; font-size:.78rem; font-weight:700;
@@ -114,8 +309,7 @@ const styles = `
   @keyframes heroScale { from{opacity:0;transform:scale(.78) translateY(20px)} to{opacity:1;transform:none} }
   .hero-h1 .word-solid { color:var(--white); display:block; }
   .hero-h1 .word-outline {
-    display:block;
-    color:transparent;
+    display:block; color:transparent;
     -webkit-text-stroke:2px var(--red);
     filter:drop-shadow(0 0 28px rgba(225,29,72,.55));
   }
@@ -129,7 +323,6 @@ const styles = `
   }
   @keyframes fadeUp { from{opacity:0;transform:translateY(22px)} to{opacity:1;transform:none} }
 
-  /* CTA row */
   .hero-ctas {
     display:flex; gap:14px; flex-wrap:wrap; justify-content:center;
     position:relative; z-index:2;
@@ -156,7 +349,6 @@ const styles = `
   }
   .btn-ghost:hover { transform:translateY(-3px); border-color:rgba(255,255,255,.5); background:rgba(255,255,255,.06); }
 
-  /* Stat strip */
   .hero-stats {
     display:flex; gap:0; flex-wrap:wrap; justify-content:center;
     margin-top:4rem; position:relative; z-index:2;
@@ -173,7 +365,6 @@ const styles = `
   .hero-stat-n { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.8rem,4vw,2.6rem); color:var(--red); line-height:1; }
   .hero-stat-l { font-family:'DM Sans',sans-serif; font-size:.66rem; color:var(--white-muted); letter-spacing:.12em; text-transform:uppercase; margin-top:2px; }
 
-  /* Scroll indicator */
   .hero-scroll {
     position:absolute; bottom:2rem; left:50%; transform:translateX(-50%);
     z-index:2; display:flex; flex-direction:column; align-items:center; gap:6px;
@@ -186,6 +377,127 @@ const styles = `
     animation:scrollBar 2.2s ease-in-out infinite;
   }
   @keyframes scrollBar { 0%{transform:scaleY(0);transform-origin:top} 50%{transform:scaleY(1);transform-origin:top} 51%{transform:scaleY(1);transform-origin:bottom} 100%{transform:scaleY(0);transform-origin:bottom} }
+
+  /* ══════════════════════════════════
+     COUNTDOWN TIMER
+  ══════════════════════════════════ */
+  .cd-section {
+    position:relative; z-index:1;
+    padding:4.5rem 1.25rem;
+    overflow:hidden;
+  }
+
+  /* Background glow burst behind the timer */
+  .cd-section::before {
+    content:''; position:absolute;
+    width:600px; height:300px;
+    top:50%; left:50%; transform:translate(-50%,-50%);
+    background:radial-gradient(ellipse,rgba(225,29,72,.12) 0%,transparent 70%);
+    pointer-events:none;
+  }
+
+  .cd-inner { max-width:900px; margin:0 auto; text-align:center; position:relative; z-index:1; }
+
+  .cd-eyebrow {
+    display:inline-flex; align-items:center; gap:10px;
+    font-family:'Rajdhani',sans-serif; font-size:.72rem; font-weight:700;
+    letter-spacing:.26em; text-transform:uppercase; color:var(--red);
+    margin-bottom:1rem;
+  }
+  .cd-eyebrow::before,.cd-eyebrow::after { content:''; width:18px; height:1px; background:var(--red); }
+
+  .cd-heading {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(1.8rem,4.5vw,3rem);
+    letter-spacing:.05em; color:var(--white); margin-bottom:.5rem; line-height:1;
+  }
+  .cd-heading span { color:var(--red); }
+
+  .cd-sub {
+    font-family:'DM Sans',sans-serif; font-size:.88rem;
+    color:var(--white-muted); margin-bottom:2.8rem; line-height:1.7;
+  }
+
+  /* Timer blocks */
+  .cd-timer {
+    display:flex; gap:12px; justify-content:center; align-items:flex-end;
+    flex-wrap:wrap;
+  }
+
+  .cd-block {
+    position:relative; border-radius:16px; overflow:hidden;
+    width:clamp(80px,18vw,140px);
+    background:linear-gradient(158deg,#1c0a0d 0%,#0e0e0e 55%,#1a0809 100%);
+    border:1px solid rgba(225,29,72,.26);
+    box-shadow:0 4px 22px rgba(225,29,72,.08);
+    padding:20px 10px 16px;
+    text-align:center;
+    transition:border-color .3s ease, box-shadow .3s ease;
+    transform-style:preserve-3d;
+  }
+  /* Shimmer top line */
+  .cd-block::before {
+    content:''; position:absolute; top:0; left:12%; right:12%; height:1px;
+    background:linear-gradient(90deg,transparent,rgba(225,29,72,.8),transparent);
+  }
+  /* Gloss */
+  .cd-block::after {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(145deg,rgba(255,255,255,.05) 0%,transparent 55%);
+    pointer-events:none;
+  }
+  .cd-block:hover { border-color:rgba(225,29,72,.65); box-shadow:0 12px 36px rgba(225,29,72,.22); }
+
+  /* Flip animation on digit change */
+  .cd-num {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(2.4rem,8vw,4.5rem);
+    color:var(--white); line-height:1;
+    display:block; position:relative; z-index:1;
+    animation:none;
+  }
+  .cd-num.flip {
+    animation:cdFlip .35s cubic-bezier(.22,1,.36,1) both;
+  }
+  @keyframes cdFlip {
+    0%  { transform:translateY(-8px) scale(.94); opacity:.4; }
+    100%{ transform:translateY(0)    scale(1);   opacity:1; }
+  }
+
+  .cd-label {
+    font-family:'Rajdhani',sans-serif; font-weight:700;
+    font-size:.62rem; letter-spacing:.2em; text-transform:uppercase;
+    color:rgba(225,29,72,.75); margin-top:6px;
+    display:block; position:relative; z-index:1;
+  }
+
+  /* Colon separator */
+  .cd-colon {
+    font-family:'Bebas Neue',sans-serif;
+    font-size:clamp(2rem,6vw,3.5rem);
+    color:rgba(225,29,72,.5); line-height:1;
+    padding-bottom:20px;
+    animation:colonBlink 1s ease-in-out infinite;
+  }
+  @keyframes colonBlink { 0%,100%{opacity:.5} 50%{opacity:1} }
+
+  /* Event date badge below timer */
+  .cd-date-badge {
+    display:inline-flex; align-items:center; gap:8px;
+    margin-top:2rem;
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.78rem; letter-spacing:.14em; text-transform:uppercase;
+    padding:9px 22px; border-radius:100px;
+    background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.1);
+    color:var(--white-muted);
+  }
+  .cd-date-badge-dot { width:7px; height:7px; border-radius:50%; background:var(--red); animation:pulseDot 2s ease-in-out infinite; flex-shrink:0; }
+  @keyframes pulseDot { 0%,100%{box-shadow:0 0 0 0 var(--red-glow)} 50%{box-shadow:0 0 0 8px transparent} }
+
+  @media(max-width:480px){
+    .cd-timer { gap:6px; }
+    .cd-block { width:clamp(64px,20vw,90px); padding:14px 6px 12px; border-radius:12px; }
+    .cd-colon { font-size:1.8rem; padding-bottom:14px; }
+  }
 
   /* ══════════════════════════════════
      SHARED SECTION
@@ -202,7 +514,6 @@ const styles = `
   .sec-h2 span { color:var(--red); }
   .sec-sub { font-size:.96rem; color:var(--white-muted); line-height:1.75; max-width:520px; margin-bottom:0; }
 
-  /* Divider */
   .hp-div { display:flex; align-items:center; gap:12px; max-width:1240px; margin:0 auto; padding:0 1.25rem; }
   .hp-div::before,.hp-div::after { content:''; flex:1; height:1px; background:var(--gray-2); }
   .hp-div-dot { width:8px; height:8px; border-radius:50%; background:var(--red); box-shadow:0 0 10px var(--red-glow); flex-shrink:0; }
@@ -233,8 +544,7 @@ const styles = `
   @media(max-width:768px){ .about-block{ grid-template-columns:1fr; gap:24px; } }
   .about-img {
     position:relative; border-radius:18px; overflow:hidden; aspect-ratio:4/3;
-    border:1px solid var(--gray-2);
-    transition:box-shadow .4s ease;
+    border:1px solid var(--gray-2); transition:box-shadow .4s ease;
   }
   .about-img::before { content:''; position:absolute; inset:0; background:linear-gradient(135deg,rgba(225,29,72,.1) 0%,transparent 60%); z-index:1; pointer-events:none; }
   .about-img:hover { box-shadow:0 20px 56px rgba(225,29,72,.14); }
@@ -245,11 +555,10 @@ const styles = `
   .about-p { font-size:.91rem; line-height:1.84; color:var(--white-muted); margin-bottom:.9rem; }
 
   /* ══════════════════════════════════
-     LEADERS — 3D tilt cards
+     LEADERS
   ══════════════════════════════════ */
   .leaders-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(195px,1fr)); gap:18px; margin-top:3rem; }
   @media(max-width:640px){ .leaders-grid{ grid-template-columns:repeat(2,1fr); gap:12px; } }
-
   .leader-card {
     position:relative; border-radius:18px; overflow:hidden;
     padding:26px 16px 22px; text-align:center; cursor:default;
@@ -259,34 +568,21 @@ const styles = `
     transition:box-shadow .4s cubic-bezier(.22,1,.36,1), border-color .4s ease;
     will-change:transform;
   }
-  /* shimmer top line */
   .leader-card::before { content:''; position:absolute; top:0; left:10%; right:10%; height:1px; background:linear-gradient(90deg,transparent,rgba(225,29,72,.7),transparent); opacity:.7; }
-  /* gloss overlay */
   .leader-card::after  { content:''; position:absolute; inset:0; background:linear-gradient(145deg,rgba(255,255,255,.05) 0%,transparent 55%); pointer-events:none; }
-
   .leader-card:hover { border-color:rgba(225,29,72,.6); box-shadow:0 22px 54px rgba(225,29,72,.2), 0 0 0 1px rgba(225,29,72,.28); }
-
-  /* photo ring */
   .leader-photo {
     width:120px; height:120px; border-radius:50%; overflow:hidden;
-    margin:0 auto 16px; border:2px solid rgba(225,29,72,.35); flex-shrink:0;
-    transition:box-shadow .4s ease;
-    position:relative; z-index:1;
+    margin:0 auto 16px; border:2px solid rgba(225,29,72,.35);
+    transition:box-shadow .4s ease; position:relative; z-index:1;
   }
   .leader-card:hover .leader-photo { box-shadow:0 0 0 4px rgba(225,29,72,.85), 0 0 28px rgba(225,29,72,.5); }
   .leader-photo img { object-fit:cover; object-position:center top; transition:transform .5s cubic-bezier(.22,1,.36,1); }
   .leader-card:hover .leader-photo img { transform:scale(1.12); }
-
-  /* shimmer on photo */
   .leader-photo::after { content:''; position:absolute; inset:0; border-radius:50%; background:linear-gradient(135deg,rgba(255,255,255,.2) 0%,transparent 55%); opacity:0; transition:opacity .35s ease; pointer-events:none; }
   .leader-card:hover .leader-photo::after { opacity:1; }
-
   .leader-name { font-family:'Rajdhani',sans-serif; font-size:.95rem; font-weight:700; letter-spacing:.04em; color:var(--white); text-transform:uppercase; line-height:1.2; margin-bottom:5px; position:relative; z-index:1; }
   .leader-role { font-family:'DM Sans',sans-serif; font-size:.72rem; color:rgba(225,29,72,.8); line-height:1.45; position:relative; z-index:1; }
-
-  /* Social row on hover */
-  .leader-socials { display:flex; justify-content:center; gap:0; margin-top:12px; opacity:0; transform:translateY(7px); transition:opacity .3s ease, transform .3s ease; position:relative; z-index:1; }
-  .leader-card:hover .leader-socials { opacity:1; transform:translateY(0); }
 
   /* ══════════════════════════════════
      DOMAINS
@@ -418,366 +714,523 @@ const styles = `
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
 function useReveal(threshold = 0.1) {
-    const ref = useRef<HTMLDivElement>(null)
-    useEffect(() => {
-        const el = ref.current; if (!el) return
-        const obs = new IntersectionObserver(([e]) => {
-            if (e.isIntersecting) { el.classList.add('vis'); obs.unobserve(el) }
-        }, { threshold })
-        obs.observe(el); return () => obs.disconnect()
-    }, [threshold])
-    return ref
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ref.current; if (!el) return
+    const obs = new IntersectionObserver(([e]) => {
+      if (e.isIntersecting) { el.classList.add('vis'); obs.unobserve(el) }
+    }, { threshold })
+    obs.observe(el); return () => obs.disconnect()
+  }, [threshold])
+  return ref
 }
 
-// 3D tilt for cards
 function useTilt(strength = 12) {
-    const ref = useRef<HTMLDivElement>(null)
-    useEffect(() => {
-        const el = ref.current; if (!el) return
-        const onMove = (e: MouseEvent) => {
-            const r = el.getBoundingClientRect()
-            const x = (e.clientX - r.left) / r.width - .5
-            const y = (e.clientY - r.top) / r.height - .5
-            el.style.transform = `perspective(700px) rotateY(${x * strength}deg) rotateX(${-y * strength}deg) translateZ(8px)`
-        }
-        const onLeave = () => { el.style.transform = 'perspective(700px) rotateY(0deg) rotateX(0deg) translateZ(0px)' }
-        el.addEventListener('mousemove', onMove)
-        el.addEventListener('mouseleave', onLeave)
-        return () => { el.removeEventListener('mousemove', onMove); el.removeEventListener('mouseleave', onLeave) }
-    }, [strength])
-    return ref
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ref.current; if (!el) return
+    const onMove = (e: MouseEvent) => {
+      const r = el.getBoundingClientRect()
+      const x = (e.clientX - r.left) / r.width - .5
+      const y = (e.clientY - r.top) / r.height - .5
+      el.style.transform = `perspective(700px) rotateY(${x * strength}deg) rotateX(${-y * strength}deg) translateZ(8px)`
+    }
+    const onLeave = () => { el.style.transform = 'perspective(700px) rotateY(0deg) rotateX(0deg) translateZ(0px)' }
+    el.addEventListener('mousemove', onMove)
+    el.addEventListener('mouseleave', onLeave)
+    return () => { el.removeEventListener('mousemove', onMove); el.removeEventListener('mouseleave', onLeave) }
+  }, [strength])
+  return ref
 }
 
-// Counter component
 function Counter({ end, label }: { end: number; label: string }) {
-    const [val, setVal] = useState(0)
-    const ref = useRef<HTMLDivElement>(null)
-    useEffect(() => {
-        const el = ref.current; if (!el) return
-        const obs = new IntersectionObserver(([e]) => {
-            if (!e.isIntersecting) return
-            let cur = 0
-            const step = () => { cur += Math.max(1, Math.ceil((end - cur) / 16)); if (cur >= end) { setVal(end); return } setVal(cur); requestAnimationFrame(step) }
-            requestAnimationFrame(step); obs.unobserve(el)
-        }, { threshold: .5 })
-        obs.observe(el); return () => obs.disconnect()
-    }, [end])
-    return (
-        <div ref={ref} className="hero-stat">
-            <div className="hero-stat-n">{val}+</div>
-            <div className="hero-stat-l">{label}</div>
-        </div>
-    )
+  const [val, setVal] = useState(0)
+  const ref = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const el = ref.current; if (!el) return
+    const obs = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return
+      let cur = 0
+      const step = () => { cur += Math.max(1, Math.ceil((end - cur) / 16)); if (cur >= end) { setVal(end); return } setVal(cur); requestAnimationFrame(step) }
+      requestAnimationFrame(step); obs.unobserve(el)
+    }, { threshold: .5 })
+    obs.observe(el); return () => obs.disconnect()
+  }, [end])
+  return (
+    <div ref={ref} className="hero-stat">
+      <div className="hero-stat-n">{val}+</div>
+      <div className="hero-stat-l">{label}</div>
+    </div>
+  )
 }
-
-// Floating particles in hero
 
 function HeroParticles() {
-    return (
-        <>
-            {[...Array(8)].map((_, i) => (
-                <div key={i} className="hero-particle" style={{
-                    width: `${5 + (i % 5) * 2}px`, height: `${5 + (i % 5) * 2}px`,
-                    left: `${10 + i * 11}%`, bottom: `${15 + (i % 4) * 8}%`,
-                    animationDuration: `${3 + i * .7}s`,
-                    animationDelay: `${i * .5}s`,
-                    filter: `blur(${i % 2}px)`,
-                }} />
-            ))}
-        </>
-    )
+  return (
+    <>
+      {[...Array(8)].map((_, i) => (
+        <div key={i} className="hero-particle" style={{
+          width: `${5 + (i % 5) * 2}px`, height: `${5 + (i % 5) * 2}px`,
+          left: `${10 + i * 11}%`, bottom: `${15 + (i % 4) * 8}%`,
+          animationDuration: `${3 + i * .7}s`,
+          animationDelay: `${i * .5}s`,
+          filter: `blur(${i % 2}px)`,
+        }} />
+      ))}
+    </>
+  )
 }
 
-// Leader card with 3D tilt
 function LeaderCard({ name, role, img, fit = 'cover' }: { name: string; role: string; img: string; fit?: 'cover' | 'contain' }) {
-    const tilt = useTilt(10)
-    return (
-        <div ref={tilt} className="leader-card">
-            <div className="leader-photo">
-                <Image src={img} alt={name} fill style={{ objectFit: fit, objectPosition: 'center top' }} sizes="120px" />
-            </div>
-            <div className="leader-name">{name}</div>
-            <div className="leader-role">{role}</div>
-        </div>
-    )
+  const tilt = useTilt(10)
+  return (
+    <div ref={tilt} className="leader-card">
+      <div className="leader-photo">
+        <Image src={img} alt={name} fill style={{ objectFit: fit, objectPosition: 'center top' }} sizes="120px" />
+      </div>
+      <div className="leader-name">{name}</div>
+      <div className="leader-role">{role}</div>
+    </div>
+  )
 }
 
-// Pillar card with 3D tilt
 function PillarCard({ icon, title, desc }: { icon: string; title: string; desc: string }) {
-    const tilt = useTilt(8)
-    return (
-        <div ref={tilt} className="pillar-card">
-            <span className="pillar-icon">{icon}</span>
-            <div className="pillar-title">{title}</div>
-            <div className="pillar-desc">{desc}</div>
-        </div>
-    )
+  const tilt = useTilt(8)
+  return (
+    <div ref={tilt} className="pillar-card">
+      <span className="pillar-icon">{icon}</span>
+      <div className="pillar-title">{title}</div>
+      <div className="pillar-desc">{desc}</div>
+    </div>
+  )
 }
 
-// Domain card with 3D tilt
 function DomainCard({ icon, name, cls, desc }: { icon: string; name: string; cls: string; desc: string }) {
-    const tilt = useTilt(9)
-    return (
-        <div ref={tilt} className={`domain-card ${cls}`}>
-            <div className="domain-icon">{icon}</div>
-            <div className="domain-name">{name}</div>
-            <div className="domain-desc">{desc}</div>
+  const tilt = useTilt(9)
+  return (
+    <div ref={tilt} className={`domain-card ${cls}`}>
+      <div className="domain-icon">{icon}</div>
+      <div className="domain-name">{name}</div>
+      <div className="domain-desc">{desc}</div>
+    </div>
+  )
+}
+
+// ─── Countdown Timer ──────────────────────────────────────────────────────────
+const EVENT_DATE = new Date('2026-04-17T00:00:00+05:30') // 17 April 2026 IST
+
+interface TimeLeft { days: number; hours: number; minutes: number; seconds: number }
+
+function getTimeLeft(): TimeLeft | null {
+  const now = new Date()
+  const diff = EVENT_DATE.getTime() - now.getTime()
+  if (diff <= 0) return null
+  return {
+    days: Math.floor(diff / 86400000),
+    hours: Math.floor((diff % 86400000) / 3600000),
+    minutes: Math.floor((diff % 3600000) / 60000),
+    seconds: Math.floor((diff % 60000) / 1000),
+  }
+}
+
+function pad(n: number) { return String(n).padStart(2, '0') }
+
+function TimerBlock({ value, label, flip }: { value: string; label: string; flip: boolean }) {
+  const tilt = useTilt(6)
+  return (
+    <div ref={tilt} className="cd-block">
+      <span className={`cd-num${flip ? ' flip' : ''}`}>{value}</span>
+      <span className="cd-label">{label}</span>
+    </div>
+  )
+}
+
+function Countdown() {
+  const [time, setTime] = useState<TimeLeft | null>(getTimeLeft)
+  const [flips, setFlips] = useState({ d: false, h: false, m: false, s: false })
+  const prevRef = useRef<TimeLeft | null>(null)
+  const revealRef = useReveal(0.1)
+
+  useEffect(() => {
+    const tick = () => {
+      const next = getTimeLeft()
+      const prev = prevRef.current
+      if (next && prev) {
+        setFlips({
+          d: next.days !== prev.days,
+          h: next.hours !== prev.hours,
+          m: next.minutes !== prev.minutes,
+          s: next.seconds !== prev.seconds,
+        })
+      }
+      prevRef.current = next
+      setTime(next)
+    }
+    const id = setInterval(tick, 1000)
+    return () => clearInterval(id)
+  }, [])
+
+  // After event date, render nothing
+  if (!time) return null
+
+  return (
+    <section className="cd-section">
+      <div ref={revealRef} className="rv cd-inner">
+        <div className="cd-eyebrow">Techno Vivarta</div>
+        <div className="cd-heading">Event starts in <span>—</span></div>
+        <div className="cd-sub">
+          Mark your calendar. The biggest tech fest of Techno India University is almost here.
         </div>
-    )
+
+        <div className="cd-timer">
+          <TimerBlock value={String(time.days)} label="Days" flip={flips.d} />
+          <div className="cd-colon">:</div>
+          <TimerBlock value={pad(time.hours)} label="Hours" flip={flips.h} />
+          <div className="cd-colon">:</div>
+          <TimerBlock value={pad(time.minutes)} label="Minutes" flip={flips.m} />
+          <div className="cd-colon">:</div>
+          <TimerBlock value={pad(time.seconds)} label="Seconds" flip={flips.s} />
+        </div>
+
+        <div className="cd-date-badge">
+          <div className="cd-date-badge-dot" />
+          17 April 2026 · Techno India University
+        </div>
+      </div>
+    </section>
+  )
+}
+
+// ─── Navbar ───────────────────────────────────────────────────────────────────
+const navLinks = [
+  { href: '/', label: 'Home' },
+  { href: '/events', label: 'Events' },
+  { href: '/pre-events', label: 'Pre Events' },
+  { href: '/team', label: 'Team' },
+  { href: '/blogs', label: 'Blogs' },
+  { href: '/contact', label: 'Contact' },
+]
+
+function Navbar() {
+  const [open, setOpen] = useState(false)
+
+  useEffect(() => {
+    if (open) document.body.classList.add('nav-locked')
+    else document.body.classList.remove('nav-locked')
+    return () => document.body.classList.remove('nav-locked')
+  }, [open])
+
+  const close = () => setOpen(false)
+
+  return (
+    <>
+      <nav className="nav">
+        {/* Logo */}
+        <Link href="/" className="nav-logo" onClick={close}>
+          Techno<span>Vivarta</span>
+        </Link>
+
+        {/* Desktop links */}
+        <div className="nav-links">
+          {navLinks.map(l => (
+            <Link key={l.href} href={l.href} className="nav-link">{l.label}</Link>
+          ))}
+        </div>
+
+        {/* Desktop CTA */}
+        <Link href="/events" className="nav-cta">View Events</Link>
+
+        {/* Mobile hamburger */}
+        <button
+          className="nav-burger"
+          onClick={() => setOpen(o => !o)}
+          aria-label={open ? 'Close menu' : 'Open menu'}
+        >
+          {open ? <HiX size={20} /> : <HiMenuAlt3 size={20} />}
+        </button>
+      </nav>
+
+      {/* Mobile drawer */}
+      <div className={`nav-drawer${open ? ' open' : ''}`} aria-hidden={!open}>
+        <div className="nav-drawer-links">
+          {navLinks.map(l => (
+            <Link key={l.href} href={l.href} className="nav-drawer-link" onClick={close}>
+              {l.label}
+              <HiArrowRight size={18} />
+            </Link>
+          ))}
+        </div>
+        <div className="nav-drawer-footer">
+          <Link href="/events" className="nav-drawer-cta" onClick={close}>
+            Register Now <HiArrowRight size={15} />
+          </Link>
+        </div>
+      </div>
+    </>
+  )
 }
 
 // ─── Data ─────────────────────────────────────────────────────────────────────
 const leaders = [
-    { name: "Prof. Samiran Chattopadhyay", role: "Pro Vice Chancellor, Techno India University", img: "/samiran.jpeg", fit: "contain" as const },
-    { name: "Dr. Sujoy Biswas", role: "CEO, Techno India Group", img: "/sujoy.jpg", fit: "cover" as const },
-    { name: "Dr. Rina Paladhi", role: "Director, Techno India Group", img: "/rina.jpg", fit: "contain" as const },
-    { name: "Dr. Ishan Ghosh", role: "Associate Dean of Student Affairs, Techno India University", img: "/ishan.jpg", fit: "contain" as const },
-    { name: "Dr. Ashoke Kumar Paul", role: "Convener, Techno Vivarta", img: "/ashoke.jpeg", fit: "cover" as const },
+  { name: "Prof. Samiran Chattopadhyay", role: "Pro Vice Chancellor, Techno India University", img: "/samiran.jpeg", fit: "contain" as const },
+  { name: "Dr. Sujoy Biswas", role: "CEO, Techno India Group", img: "/sujoy.jpg", fit: "cover" as const },
+  { name: "Dr. Rina Paladhi", role: "Director, Techno India Group", img: "/rina.jpg", fit: "contain" as const },
+  { name: "Dr. Ishan Ghosh", role: "Associate Dean of Student Affairs, Techno India University", img: "/ishan.jpg", fit: "contain" as const },
+  { name: "Dr. Ashoke Kumar Paul", role: "Convener, Techno Vivarta", img: "/ashoke.jpeg", fit: "cover" as const },
 ]
-
 const domains = [
-    { icon: "💻", name: "Computing", cls: "dc-computing", desc: "From AI to software dev — explore the full digital spectrum." },
-    { icon: "🤖", name: "Robotics", cls: "dc-robotics", desc: "Build bots, compete, and push the limits of what machines can do." },
-    { icon: "🎮", name: "Gaming", cls: "dc-gaming", desc: "Game design, eSports, and everything in between." },
-    { icon: "⚙️", name: "Mechmania", cls: "dc-mechmania", desc: "Engineering meets innovation: design real-world mechanical solutions." },
-    { icon: "💡", name: "Innovation & Mgmt", cls: "dc-innovation", desc: "Think creatively, lead teams, and turn ideas into impact." },
-    { icon: "🎨", name: "Designing", cls: "dc-designing", desc: "UX, graphic, visual — make things beautiful and functional." },
-    { icon: "🎉", name: "Fun Events", cls: "dc-fun", desc: "Tech-themed adventures and memories that last a lifetime." },
+  { icon: "💻", name: "Computing", cls: "dc-computing", desc: "From AI to software dev — explore the full digital spectrum." },
+  { icon: "🤖", name: "Robotics", cls: "dc-robotics", desc: "Build bots, compete, and push the limits of what machines can do." },
+  { icon: "🎮", name: "Gaming", cls: "dc-gaming", desc: "Game design, eSports, and everything in between." },
+  { icon: "⚙️", name: "Mechmania", cls: "dc-mechmania", desc: "Engineering meets innovation: design real-world mechanical solutions." },
+  { icon: "💡", name: "Innovation & Mgmt", cls: "dc-innovation", desc: "Think creatively, lead teams, and turn ideas into impact." },
+  { icon: "🎨", name: "Designing", cls: "dc-designing", desc: "UX, graphic, visual — make things beautiful and functional." },
+  { icon: "🎉", name: "Fun Events", cls: "dc-fun", desc: "Tech-themed adventures and memories that last a lifetime." },
 ]
-
 const events = [
-    { _id: "1", title: "Scavenger Hunt: A Fun-Filled Adventure!", date: "Mar 8, 2025", venue: "Techno India University", time: "11 AM onwards", image: "/temp/20.jpeg", rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLSdkRFR-T8sV58Zyu3kcD_XDctb1WA09AbLQ2-5Yn-adO7BqWQ/viewform" },
-    { _id: "2", title: "Ultimate Food Eating Challenge!", date: "Mar 10, 2025", venue: "Techno India University", time: "12 PM onwards", image: "/temp/21.jpeg", rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLScSR5lCKDNxqafEa5zxRNkiFGRLkPuvZflL5m9n9-IyDFUELw/viewform" },
-    { _id: "3", title: "Hackquest", date: "Mar 8–9, 2025", venue: "Techno India University", time: "12 PM onwards", image: "/temp/24.png", rsvplink: "https://lemonade.social/e/AigjXHfi" },
+  { _id: "1", title: "Scavenger Hunt: A Fun-Filled Adventure!", date: "Mar 8, 2025", venue: "Techno India University", time: "11 AM onwards", image: "/temp/20.jpeg", rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLSdkRFR-T8sV58Zyu3kcD_XDctb1WA09AbLQ2-5Yn-adO7BqWQ/viewform" },
+  { _id: "2", title: "Ultimate Food Eating Challenge!", date: "Mar 10, 2025", venue: "Techno India University", time: "12 PM onwards", image: "/temp/21.jpeg", rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLScSR5lCKDNxqafEa5zxRNkiFGRLkPuvZflL5m9n9-IyDFUELw/viewform" },
+  { _id: "3", title: "Hackquest", date: "Mar 8–9, 2025", venue: "Techno India University", time: "12 PM onwards", image: "/temp/24.png", rsvplink: "https://lemonade.social/e/AigjXHfi" },
 ]
 
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function Home() {
-    const pillarsRef = useReveal(0.08)
-    const aboutRef1 = useReveal(0.1)
-    const aboutRef2 = useReveal(0.1)
-    const aboutRef3 = useReveal(0.1)
-    const leadersRef = useReveal(0.07)
-    const domainsRef = useReveal(0.07)
-    const eventsRef = useReveal(0.07)
-    const connectRef = useReveal(0.08)
-    const h1Ref = useReveal(0.05)
-    const pillarsHdr = useReveal(0.1)
-    const aboutHdr = useReveal(0.1)
-    const leadersHdr = useReveal(0.1)
-    const domainsHdr = useReveal(0.1)
-    const eventsHdr = useReveal(0.1)
-    const connectHdr = useReveal(0.1)
+  const pillarsRef = useReveal(0.08)
+  const aboutRef1 = useReveal(0.1)
+  const aboutRef2 = useReveal(0.1)
+  const aboutRef3 = useReveal(0.1)
+  const leadersRef = useReveal(0.07)
+  const domainsRef = useReveal(0.07)
+  const eventsRef = useReveal(0.07)
+  const connectRef = useReveal(0.08)
+  const h1Ref = useReveal(0.05)
+  const pillarsHdr = useReveal(0.1)
+  const aboutHdr = useReveal(0.1)
+  const leadersHdr = useReveal(0.1)
+  const domainsHdr = useReveal(0.1)
+  const eventsHdr = useReveal(0.1)
+  const connectHdr = useReveal(0.1)
 
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        e.preventDefault()
-        const formData = new FormData(e.target as HTMLFormElement)
-        try {
-            const res = await fetch("https://script.google.com/macros/s/AKfycbxMnihMfCeeGsPAic8waMfMwmr0XUHKgx1Q57BCjzYclEkJWBgSwHaEW9Qqq7hd2EHI0g/exec", { method: "POST", body: formData })
-            if (res.ok) alert("Thanks for subscribing!")
-        } catch (err) { console.error(err) }
-    }
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const formData = new FormData(e.target as HTMLFormElement)
+    try {
+      const res = await fetch("https://script.google.com/macros/s/AKfycbxMnihMfCeeGsPAic8waMfMwmr0XUHKgx1Q57BCjzYclEkJWBgSwHaEW9Qqq7hd2EHI0g/exec", { method: "POST", body: formData })
+      if (res.ok) alert("Thanks for subscribing!")
+    } catch (err) { console.error(err) }
+  }
 
-    return (
-        <>
-            <style dangerouslySetInnerHTML={{ __html: styles }} />
-            <div className="hp-root">
-                <div className="hp-bg-grid" />
-                <div className="hp-orb hp-orb-1" />
-                <div className="hp-orb hp-orb-2" />
+  return (
+    <>
+      <style dangerouslySetInnerHTML={{ __html: styles }} />
+      <Navbar />
+      <div className="hp-root">
+        <div className="hp-bg-grid" />
+        <div className="hp-orb hp-orb-1" />
+        <div className="hp-orb hp-orb-2" />
 
-                {/* ══ HERO ══ */}
-                <section className="hero">
-                    <div className="hero-scan" />
-                    <div className="hero-ring hero-ring-1" />
-                    <div className="hero-ring hero-ring-2" />
-                    <div className="hero-ring hero-ring-3" />
+        {/* ══ HERO ══ */}
+        <section className="hero">
+          {/* Three.js tubes cursor animation — full hero background */}
+          <HeroCanvas />
 
-                    <HeroParticles />
+          {/* Thin red top accent line */}
+          <div className="hero-top-bar" />
 
-                    <div className="hero-eyebrow">Techno India University</div>
+          {/* Rings + scan on top of canvas */}
+          <div className="hero-scan" />
+          <div className="hero-ring hero-ring-1" />
+          <div className="hero-ring hero-ring-2" />
+          <div className="hero-ring hero-ring-3" />
 
-                    <h1 className="hero-h1" ref={h1Ref as React.RefObject<HTMLHeadingElement>}>
-                        <span className="word-solid">Techno</span>
-                        <span className="word-outline">Vivarta</span>
-                    </h1>
+          {/* All text/buttons — pointer-events enabled via z-index */}
+          <div className="hero-eyebrow">Techno India University</div>
+          <h1 className="hero-h1" ref={h1Ref as React.RefObject<HTMLHeadingElement>}>
+            <span className="word-solid">Techno</span>
+            <span className="word-outline">Vivarta</span>
+          </h1>
+          <p className="hero-tagline">
+            Where innovation meets community — builders, thinkers &amp; creators pushing the boundaries of technology.
+          </p>
+          <div className="hero-ctas">
+            <Link href="/events" className="btn-red">Explore Events <HiArrowRight size={15} /></Link>
+            <Link href="#about" className="btn-ghost">Learn More</Link>
+          </div>
+          <div className="hero-scroll">
+            <div className="hero-scroll-bar" />
+          </div>
 
-                    <p className="hero-tagline">
-                        Where innovation meets community — builders, thinkers &amp; creators pushing the boundaries of technology.
-                    </p>
+          {/* Click hint — bottom right */}
+          <div className="hero-click-hint">
+            <span className="hero-click-dot" />
 
-                    <div className="hero-ctas">
-                        <Link href="/events" className="btn-red">Explore Events <HiArrowRight size={15} /></Link>
-                        <Link href="#about" className="btn-ghost">Learn More</Link>
-                    </div>
+          </div>
+        </section>
 
-                </section>
+        {/* ══ COUNTDOWN ══ — auto-hides after 17 Apr 2026 */}
+        <Countdown />
 
-                {/* ══ PILLARS ══ */}
-                <section className="hp-section" id="learn-more">
-                    <div className="hp-inner">
-                        <div ref={pillarsHdr} className="rv">
-                            <div className="sec-label">What we offer</div>
-                            <h2 className="sec-h2">A community where <span>you</span></h2>
-                        </div>
-                        <div ref={pillarsRef} className="sg pillars-grid">
-                            <PillarCard icon="🔭" title="Explore" desc="Unlock your potential with hands-on technology workshops — from coding to robotics, for every skill level." />
-                            <PillarCard icon="📖" title="Learn" desc="Continuous learning to acquire new skills, advance your career, and feed your intellectual curiosity." />
-                            <PillarCard icon="🤝" title="Connect" desc="Meet people who share your passion. Attend tech talks, hackathons, and forge lasting industry connections." />
-                        </div>
-                    </div>
-                </section>
+        <div className="hp-div"><div className="hp-div-dot" /></div>
 
-                <div className="hp-div"><div className="hp-div-dot" /></div>
-
-                {/* ══ ABOUT ══ */}
-                <section className="hp-section" id="about">
-                    <div className="hp-inner">
-                        <div ref={aboutHdr} className="rv">
-                            <div className="sec-label">About us</div>
-                            <h2 className="sec-h2">Our <span>story</span></h2>
-                        </div>
-
-                        <div ref={aboutRef1} className="rv-l about-block" style={{ marginTop: '2.5rem' }}>
-                            <div className="about-img">
-                                <Image src="/who-are-we.jpg" alt="Who Are We" fill style={{ objectFit: 'cover' }} />
-                            </div>
-                            <div>
-                                <span className="about-tag">Who are we</span>
-                                <h3 className="about-h3">More than a tech club</h3>
-                                <p className="about-p">Techno Vivarta is the beating heart of innovation within Techno India University — a tightly-knit community where individuals from all backgrounds converge, bound by their shared passion for technology and pioneering ideas.</p>
-                                <p className="about-p">Our core objective is to equip students with the tools, insights, and experiences indispensable for excelling in the rapidly shifting landscape of technology.</p>
-                            </div>
-                        </div>
-
-                        <div ref={aboutRef2} className="rv-l about-block">
-                            <div className="about-img">
-                                <Image src="/our-story.jpg" alt="Our Story" fill style={{ objectFit: 'cover' }} />
-                            </div>
-                            <div>
-                                <span className="about-tag">Our story</span>
-                                <h3 className="about-h3">Born from a conversation</h3>
-                                <p className="about-p">Founded in 2016, Techno Vivarta began with a simple conversation among a handful of visionary students — pondering the potential of technology to reshape the world.</p>
-                                <p className="about-p">With unwavering determination, they created a community where talent could be nurtured, celebrated, and channelled into real impact that extends beyond the classroom.</p>
-                            </div>
-                        </div>
-
-                        <div ref={aboutRef3} className="rv-l about-block">
-                            <div className="about-img">
-                                <Image src="/our-mission.jpg" alt="Our Mission" fill style={{ objectFit: 'cover' }} />
-                            </div>
-                            <div>
-                                <span className="about-tag">Our mission</span>
-                                <h3 className="about-h3">Empowering the next generation</h3>
-                                <p className="about-p">We are here to empower students with the knowledge and experiences needed not only to survive but to thrive in the ever-evolving technology landscape.</p>
-                                <p className="about-p">We open doors to a wide spectrum of tech domains, ensuring that every member — no matter their background — discovers their unique path to flourish.</p>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <div className="hp-div"><div className="hp-div-dot" /></div>
-
-                {/* ══ LEADERS ══ */}
-                <section className="hp-section">
-                    <div className="hp-inner">
-                        <div ref={leadersHdr} className="rv">
-                            <div className="sec-label">Leadership</div>
-                            <h2 className="sec-h2">Our <span>leaders</span></h2>
-                            <p className="sec-sub">The visionaries who guide Techno Vivarta forward.</p>
-                        </div>
-                        <div ref={leadersRef} className="sg leaders-grid">
-                            {leaders.map(l => (
-                                <LeaderCard key={l.name} name={l.name} role={l.role} img={l.img} fit={l.fit} />
-                            ))}
-                        </div>
-                    </div>
-                </section>
-
-                <div className="hp-div"><div className="hp-div-dot" /></div>
-
-                {/* ══ DOMAINS ══ */}
-                <section className="hp-section">
-                    <div className="hp-inner">
-                        <div ref={domainsHdr} className="rv">
-                            <div className="sec-label">What we do</div>
-                            <h2 className="sec-h2">Discover your <span>interests</span></h2>
-                            <p className="sec-sub">Seven domains, one community. Find your place in the tech ecosystem.</p>
-                        </div>
-                        <div ref={domainsRef} className="sg domains-grid">
-                            {domains.map(d => <DomainCard key={d.name} {...d} />)}
-                        </div>
-                    </div>
-                </section>
-
-                <div className="hp-div"><div className="hp-div-dot" /></div>
-
-                {/* ══ EVENTS PREVIEW ══ */}
-                <section className="hp-section">
-                    <div className="hp-inner">
-                        <div ref={eventsHdr} className="rv">
-                            <div className="sec-label">Upcoming</div>
-                            <h2 className="sec-h2">Featured <span>events</span></h2>
-                            <p className="sec-sub">Reserve your spot and be part of the action.</p>
-                        </div>
-                        <div ref={eventsRef} className="sg events-grid">
-                            {events.map(ev => (
-                                <div key={ev._id} className="event-card">
-                                    <div className="event-img">
-                                        <Image src={ev.image} alt={ev.title} fill sizes="(max-width:640px) 100vw, 33vw" style={{ objectFit: 'cover' }} />
-                                    </div>
-                                    <div className="event-body">
-                                        <div className="event-title">{ev.title}</div>
-                                        <div className="event-meta">
-                                            <div className="event-meta-row"><BiTime size={12} />{ev.time} · {ev.date}</div>
-                                            <div className="event-meta-row"><MdOutlineLocationOn size={13} />{ev.venue}</div>
-                                        </div>
-                                        <Link href={ev.rsvplink} target="_blank" rel="noopener noreferrer" className="event-rsvp">
-                                            RSVP Now <HiArrowRight size={12} />
-                                        </Link>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                        <div className="view-all-wrap">
-                            <Link href="/events" className="view-all-btn">View All Events <HiArrowRight size={14} /></Link>
-                        </div>
-                    </div>
-                </section>
-
-                <div className="hp-div"><div className="hp-div-dot" /></div>
-
-                {/* ══ CONNECT ══ */}
-                <section className="hp-section">
-                    <div className="hp-inner">
-                        <div ref={connectHdr} className="rv">
-                            <div className="sec-label">Stay connected</div>
-                            <h2 className="sec-h2">Join the <span>community</span></h2>
-                        </div>
-                        <div ref={connectRef} className="sg connect-grid">
-                            <div className="connect-card">
-                                <div className="connect-title">Newsletter</div>
-                                <div className="connect-desc">Get the latest updates, events, and tech insights delivered straight to your inbox.</div>
-                                <form onSubmit={handleSubmit} className="email-form">
-                                    <input type="email" name="Email" placeholder="your@email.com" required className="email-input" />
-                                    <button type="submit" className="email-submit">Subscribe</button>
-                                </form>
-                            </div>
-                            <div className="connect-card">
-                                <div className="connect-title">Blogs</div>
-                                <div className="connect-desc">Learn in-depth tech from exclusive blogs written by our domain experts and members.</div>
-                                <Link href="/blogs" className="connect-link">Read Now <HiArrowRight size={13} /></Link>
-                            </div>
-                            <div className="connect-card">
-                                <div className="connect-title">Feedback</div>
-                                <div className="connect-desc">Share your valuable feedback and help us build a better experience for everyone.</div>
-                                <Link href="/contact" className="connect-link">Share Feedback <HiArrowRight size={13} /></Link>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
+        {/* ══ PILLARS ══ */}
+        <section className="hp-section" id="learn-more">
+          <div className="hp-inner">
+            <div ref={pillarsHdr} className="rv">
+              <div className="sec-label">What we offer</div>
+              <h2 className="sec-h2">A community where <span>you</span></h2>
             </div>
-        </>
-    )
-}
+            <div ref={pillarsRef} className="sg pillars-grid">
+              <PillarCard icon="🔭" title="Explore" desc="Unlock your potential with hands-on technology workshops — from coding to robotics, for every skill level." />
+              <PillarCard icon="📖" title="Learn" desc="Continuous learning to acquire new skills, advance your career, and feed your intellectual curiosity." />
+              <PillarCard icon="🤝" title="Connect" desc="Meet people who share your passion. Attend tech talks, hackathons, and forge lasting industry connections." />
+            </div>
+          </div>
+        </section>
+
+        <div className="hp-div"><div className="hp-div-dot" /></div>
+
+        {/* ══ ABOUT ══ */}
+        <section className="hp-section" id="about">
+          <div className="hp-inner">
+            <div ref={aboutHdr} className="rv">
+              <div className="sec-label">About us</div>
+              <h2 className="sec-h2">Our <span>story</span></h2>
+            </div>
+            <div ref={aboutRef1} className="rv-l about-block" style={{ marginTop: '2.5rem' }}>
+              <div className="about-img">
+                <Image src="/who-are-we.jpg" alt="Who Are We" fill style={{ objectFit: 'cover' }} />
+              </div>
+              <div>
+                <span className="about-tag">Who are we</span>
+                <h3 className="about-h3">More than a tech club</h3>
+                <p className="about-p">Techno Vivarta is the beating heart of innovation within Techno India University — a tightly-knit community where individuals from all backgrounds converge, bound by their shared passion for technology and pioneering ideas.</p>
+                <p className="about-p">Our core objective is to equip students with the tools, insights, and experiences indispensable for excelling in the rapidly shifting landscape of technology.</p>
+              </div>
+            </div>
+            <div ref={aboutRef2} className="rv-l about-block">
+              <div className="about-img">
+                <Image src="/our-story.jpg" alt="Our Story" fill style={{ objectFit: 'cover' }} />
+              </div>
+              <div>
+                <span className="about-tag">Our story</span>
+                <h3 className="about-h3">Born from a conversation</h3>
+                <p className="about-p">Founded in 2016, Techno Vivarta began with a simple conversation among a handful of visionary students — pondering the potential of technology to reshape the world.</p>
+                <p className="about-p">With unwavering determination, they created a community where talent could be nurtured, celebrated, and channelled into real impact beyond the classroom.</p>
+              </div>
+            </div>
+            <div ref={aboutRef3} className="rv-l about-block">
+              <div className="about-img">
+                <Image src="/our-mission.jpg" alt="Our Mission" fill style={{ objectFit: 'cover' }} />
+              </div>
+              <div>
+                <span className="about-tag">Our mission</span>
+                <h3 className="about-h3">Empowering the next generation</h3>
+                <p className="about-p">We are here to empower students with the knowledge and experiences needed not only to survive but to thrive in the ever-evolving technology landscape.</p>
+                <p className="about-p">We open doors to a wide spectrum of tech domains, ensuring every member discovers their unique path to flourish.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <div className="hp-div"><div className="hp-div-dot" /></div>
+
+        {/* ══ LEADERS ══ */}
+        <section className="hp-section">
+          <div className="hp-inner">
+            <div ref={leadersHdr} className="rv">
+              <div className="sec-label">Leadership</div>
+              <h2 className="sec-h2">Our <span>leaders</span></h2>
+              <p className="sec-sub">The visionaries who guide Techno Vivarta forward.</p>
+            </div>
+            <div ref={leadersRef} className="sg leaders-grid">
+              {leaders.map(l => <LeaderCard key={l.name} {...l} />)}
+            </div>
+          </div>
+        </section>
+
+        <div className="hp-div"><div className="hp-div-dot" /></div>
+
+        {/* ══ DOMAINS ══ */}
+        <section className="hp-section">
+          <div className="hp-inner">
+            <div ref={domainsHdr} className="rv">
+              <div className="sec-label">What we do</div>
+              <h2 className="sec-h2">Discover your <span>interests</span></h2>
+              <p className="sec-sub">Seven domains, one community. Find your place in the tech ecosystem.</p>
+            </div>
+            <div ref={domainsRef} className="sg domains-grid">
+              {domains.map(d => <DomainCard key={d.name} {...d} />)}
+            </div>
+          </div>
+        </section>
+
+        <div className="hp-div"><div className="hp-div-dot" /></div>
+
+        {/* ══ EVENTS PREVIEW ══ */}
+        <section className="hp-section">
+          <div className="hp-inner">
+            <div ref={eventsHdr} className="rv">
+              <div className="sec-label">Upcoming</div>
+              <h2 className="sec-h2">Featured <span>events</span></h2>
+              <p className="sec-sub">Reserve your spot and be part of the action.</p>
+            </div>
+            <div ref={eventsRef} className="sg events-grid">
+              {events.map(ev => (
+                <div key={ev._id} className="event-card">
+                  <div className="event-img">
+                    <Image src={ev.image} alt={ev.title} fill sizes="(max-width:640px) 100vw, 33vw" style={{ objectFit: 'cover' }} />
+                  </div>
+                  <div className="event-body">
+                    <div className="event-title">{ev.title}</div>
+                    <div className="event-meta">
+                      <div className="event-meta-row"><BiTime size={12} />{ev.time} · {ev.date}</div>
+                      <div className="event-meta-row"><MdOutlineLocationOn size={13} />{ev.venue}</div>
+                    </div>
+                    <Link href={ev.rsvplink} target="_blank" rel="noopener noreferrer" className="event-rsvp">
+                      RSVP Now <HiArrowRight size={12} />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div className="view-all-wrap">
+              <Link href="/events" className="view-all-btn">View All Events <HiArrowRight size={14} /></Link>
+            </div>
+          </div>
+        </section>
+
+        <div className="hp-div"><div className="hp-div-dot" /></div>
+
+        {/* ══ CONNECT ══ */}
+        <section className="hp-section">
+          <div className="hp-inner">
+            <div ref={connectHdr} className="rv">
+              <div className="sec-label">Stay connected</div>
+              <h2 className="sec-h2">Join the <span>community</span></h2>
+            </div>
+            <div ref={connectRef} className="sg connect-grid">
+              <div className="connect-card">
+                <div className="connect-title">Newsletter</div>
+                <div className="connect-desc">Get the latest updates, events, and tech insights delivered straight to your inbox.</div>
+                <form onSubmit={handleSubmit} className="email-form">
+                  <input type="email" name="Email" placeholder="your@email.com" required className="email-input" />
+                  <button type="submit" className="email-submit">Subscribe</button>
+                </form>
+              </div>
+              <div className="connect-card">
+                <div className="connect-title">Blogs</div>
+                <div className="connect-desc">Learn in-depth tech from exclusive blogs written by our domain experts and members.</div>
+                <Link href="/blogs" className="connect-link">Read Now <HiArrowRight size={13} /></Link>
+              </div>
+              <div className="connect-card">
+                <div className="connect-title">Feedback</div>
+                <div className="connect-desc">Share your valuable feedback and help us build a better experience for everyone.</div>
+                <Link href="/contact" className="connect-link">Share Feedback <HiArrowRight size={13} /></Link>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </>
+  )
+    }
