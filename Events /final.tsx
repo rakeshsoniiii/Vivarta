@@ -69,9 +69,10 @@ const styles = `
   .dom-section { margin-bottom:4rem; }
   .dom-header { display:flex; align-items:center; gap:16px; margin-bottom:1.8rem; }
   .dom-header::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--gray),transparent); }
-  .dom-icon { width:42px; height:42px; border-radius:12px; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; }
+  .dom-icon { width:58px; height:58px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:1.3rem; flex-shrink:0; padding:6px; }
   .dom-title { font-family:'Bebas Neue',sans-serif; font-size:clamp(1.8rem,4vw,2.6rem); letter-spacing:.05em; }
   .dom-count { font-family:'Rajdhani',sans-serif; font-size:.72rem; font-weight:700; letter-spacing:.14em; text-transform:uppercase; padding:4px 12px; border-radius:100px; white-space:nowrap; }
+
 
   /* Event grid */
   .ev-grid { display:grid; gap:16px; grid-template-columns:repeat(auto-fill,minmax(300px,1fr)); }
@@ -158,76 +159,142 @@ const styles = `
   .icon-computing  { background:rgba(45,212,191,.12); }
   .icon-designing  { background:rgba(244,114,182,.12);}
 
-  /* ──────────────────────────────────────────────
-     HOVER EXPAND OVERLAY
-     Fixed panel that slides in over the page
-  ────────────────────────────────────────────── */
+  /* ══════════════════════════════════════════════════
+     DESKTOP HOVER EXPAND — fixed centred panel
+     image LEFT  |  details RIGHT
+  ══════════════════════════════════════════════════ */
 
-  /* Backdrop blur — only shows when a card is hovered */
   .ev-expand-backdrop {
     position:fixed; inset:0; z-index:900;
-    background:rgba(0,0,0,0);
-    backdrop-filter:blur(0px);
+    background:rgba(0,0,0,0); backdrop-filter:blur(0px);
     pointer-events:none;
     transition:background .38s ease, backdrop-filter .38s ease;
   }
   .ev-expand-backdrop.active {
-    background:rgba(0,0,0,.72);
-    backdrop-filter:blur(16px) saturate(.55);
+    background:rgba(0,0,0,.75);
+    backdrop-filter:blur(18px) saturate(.5);
   }
 
-  /* The expanded panel */
   .ev-expand {
-    position:fixed;
-    top:50%; left:50%;
-    transform:translate(-50%,-50%) scale(.88);
+    position:fixed; top:50%; left:50%;
+    transform:translate(-50%,-50%) scale(.9);
     z-index:901;
-    width:min(900px, 92vw);
-    max-height:88vh;
-    border-radius:20px;
-    overflow:hidden;
-    display:flex;
-    opacity:0;
-    pointer-events:none;
+    width:min(940px, 94vw);
+    max-height:90vh;
+    border-radius:22px; overflow:hidden;
+    display:flex; flex-direction:row;
+    opacity:0; pointer-events:none;
     transition:opacity .38s cubic-bezier(.22,1,.36,1), transform .38s cubic-bezier(.22,1,.36,1);
-    box-shadow:0 40px 100px rgba(0,0,0,.8), 0 0 0 1px rgba(255,255,255,.06);
+    box-shadow:0 48px 110px rgba(0,0,0,.85), 0 0 0 1px rgba(255,255,255,.07);
   }
   .ev-expand.active {
-    opacity:1;
-    transform:translate(-50%,-50%) scale(1);
-    pointer-events:all;
+    opacity:1; transform:translate(-50%,-50%) scale(1); pointer-events:all;
   }
 
-  /* Left — full image */
+  /* ── Left: image fills its half entirely ── */
   .ev-expand-img {
-    position:relative;
-    width:48%;
-    flex-shrink:0;
-    overflow:hidden;
+    position:relative; width:50%; flex-shrink:0; overflow:hidden;
+    min-height:420px;
   }
   .ev-expand-img img {
     transition:transform .55s cubic-bezier(.22,1,.36,1) !important;
+    object-position:center;
   }
-  .ev-expand.active .ev-expand-img img {
-    transform:scale(1.06) !important;
-  }
-  /* right-side fade */
+  .ev-expand.active .ev-expand-img img { transform:scale(1.05) !important; }
+  /* subtle right-edge fade into info panel */
   .ev-expand-img::after {
     content:''; position:absolute; inset:0;
-    background:linear-gradient(to right,transparent 60%,rgba(8,8,8,.95) 100%);
+    background:linear-gradient(to right, transparent 65%, rgba(8,8,8,.96) 100%);
   }
 
-  /* Right — info */
+  /* ── Right: scrollable info ── */
   .ev-expand-info {
-    flex:1;
-    padding:28px 28px 28px 24px;
-    overflow-y:auto;
-    display:flex; flex-direction:column;
+    flex:1; padding:32px 30px 32px 28px;
+    overflow-y:auto; display:flex; flex-direction:column;
     background:var(--black);
-    scrollbar-width:thin;
-    scrollbar-color:rgba(255,255,255,.1) transparent;
+    scrollbar-width:thin; scrollbar-color:rgba(255,255,255,.1) transparent;
   }
 
+  /* ══════════════════════════════════════════════════
+     MOBILE FULLSCREEN MODAL
+     image TOP full-width → details scroll below
+  ══════════════════════════════════════════════════ */
+
+  /* Full-screen backdrop */
+  .ev-modal-overlay {
+    position:fixed; inset:0; z-index:9000;
+    background:rgba(0,0,0,0);
+    pointer-events:none;
+    transition:background .36s ease;
+  }
+  .ev-modal-overlay.active {
+    background:rgba(0,0,0,.92);
+    pointer-events:all;
+  }
+
+  /* The sheet — slides up from bottom, fills almost full screen */
+  .ev-modal {
+    position:fixed; bottom:0; left:0; right:0;
+    height:92vh;                       /* tall enough to show image + scroll details */
+    background:var(--black);
+    border-radius:22px 22px 0 0;
+    display:flex; flex-direction:column;
+    transform:translateY(100%);
+    transition:transform .44s cubic-bezier(.22,1,.36,1);
+    overflow:hidden;                   /* clip children, NOT the modal itself */
+    z-index:9001;
+  }
+  .ev-modal.active { transform:translateY(0); }
+
+  /* drag handle */
+  .ev-modal-handle {
+    width:48px; height:4px; border-radius:2px;
+    background:rgba(255,255,255,.22);
+    margin:12px auto 0; flex-shrink:0;
+  }
+
+  /* Image — full width */
+  .ev-modal-img {
+    position:relative;
+    width:100%;
+    height:52vw;          /* ~16:9 on most phones, never too tall */
+    min-height:180px;
+    max-height:260px;
+    flex-shrink:0;
+    overflow:hidden;
+    margin-top:10px;
+  }
+  .ev-modal-img img { object-fit:cover; object-position:center; }
+  .ev-modal-img::after {
+    content:''; position:absolute; inset:0;
+    background:linear-gradient(to bottom, transparent 50%, rgba(8,8,8,.88) 100%);
+  }
+
+  /* Scrollable details area */
+  .ev-modal-body {
+    flex:1;
+    overflow-y:auto;
+    overflow-x:hidden;
+    padding:18px 20px 40px;
+    display:flex; flex-direction:column;
+    scrollbar-width:none;
+    -webkit-overflow-scrolling:touch;
+  }
+  .ev-modal-body::-webkit-scrollbar { display:none; }
+
+  /* close button */
+  .ev-modal-close {
+    position:absolute; top:14px; right:14px; z-index:10;
+    width:34px; height:34px; border-radius:50%;
+    background:rgba(8,8,8,.85); border:1px solid rgba(255,255,255,.18);
+    display:flex; align-items:center; justify-content:center;
+    cursor:pointer; color:var(--white-dim);
+    transition:background .2s ease, transform .2s ease;
+  }
+  .ev-modal-close:hover,
+  .ev-modal-close:active { background:var(--red); transform:scale(1.1); }
+
+  /* ── Shared detail styles (used by both desktop panel & mobile modal) ── */
   .ev-expand-tag {
     display:inline-flex; align-items:center; gap:6px;
     font-family:'Rajdhani',sans-serif; font-size:.68rem; font-weight:700;
@@ -235,21 +302,18 @@ const styles = `
     padding:4px 12px; border-radius:100px; margin-bottom:14px;
     align-self:flex-start;
   }
-
   .ev-expand-title {
     font-family:'Bebas Neue',sans-serif;
-    font-size:clamp(1.4rem,3.5vw,2rem);
+    font-size:clamp(1.5rem,4vw,2.1rem);
     letter-spacing:.02em; color:var(--white);
     line-height:1.08; margin-bottom:14px;
   }
-
   .ev-expand-desc {
-    font-family:'DM Sans',sans-serif; font-size:.85rem;
-    line-height:1.75; color:rgba(248,250,252,.7);
+    font-family:'DM Sans',sans-serif; font-size:.88rem;
+    line-height:1.78; color:rgba(248,250,252,.72);
     margin-bottom:20px; white-space:pre-line; flex:1;
   }
-
-  .ev-expand-meta { display:flex; flex-direction:column; gap:8px; margin-bottom:22px; }
+  .ev-expand-meta { display:flex; flex-direction:column; gap:8px; margin-bottom:24px; }
   .ev-expand-meta-row {
     display:flex; align-items:center; gap:8px;
     font-family:'DM Sans',sans-serif; font-size:.8rem; color:var(--white-dim);
@@ -257,29 +321,36 @@ const styles = `
     padding:8px 14px; border-radius:10px;
   }
   .ev-expand-meta-row svg { opacity:.65; flex-shrink:0; }
-
   .ev-expand-rsvp {
     display:inline-flex; align-items:center; gap:8px;
-    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.88rem;
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.9rem;
     letter-spacing:.1em; text-transform:uppercase;
-    padding:12px 26px; border-radius:10px; border:1px solid;
+    padding:13px 28px; border-radius:10px; border:1px solid;
     text-decoration:none; align-self:flex-start;
     transition:transform .22s ease, box-shadow .22s ease, background .22s ease;
   }
   .ev-expand-rsvp:hover { transform:translateY(-2px); }
   .ev-expand-rsvp svg { transition:transform .2s ease; }
   .ev-expand-rsvp:hover svg { transform:translateX(4px); }
-
   .ev-expand-no-rsvp {
-    display:inline-flex; align-items:center;
-    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.84rem;
+    display:inline-flex; align-items:center; justify-content:center;
+    font-family:'Rajdhani',sans-serif; font-weight:700; font-size:.86rem;
     letter-spacing:.1em; text-transform:uppercase;
-    padding:12px 26px; border-radius:10px;
+    padding:13px 28px; border-radius:10px;
     background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.09);
-    color:rgba(248,250,252,.28);
+    color:rgba(248,250,252,.28); align-self:flex-start;
   }
 
-  /* RSVP colours per domain */
+  /* full-width RSVP on mobile */
+  @media(max-width:767px){
+    .ev-expand-rsvp { align-self:stretch; justify-content:center; width:100%; }
+    .ev-expand-no-rsvp { align-self:stretch; justify-content:center; width:100%; }
+    .ev-expand-meta-row { font-size:.82rem; }
+    .ev-expand-title { font-size:1.5rem; }
+    .ev-expand-desc { font-size:.86rem; }
+  }
+
+  /* RSVP colours */
   .rsvp-mechmania  { background:rgba(225,29,72,.16);  border-color:rgba(225,29,72,.55);  color:#fca5a5; }
   .rsvp-mechmania:hover  { background:rgba(225,29,72,.3);  box-shadow:0 8px 28px rgba(225,29,72,.35); }
   .rsvp-robotics   { background:rgba(56,189,248,.13); border-color:rgba(56,189,248,.52); color:#7dd3fc; }
@@ -295,116 +366,451 @@ const styles = `
   .rsvp-designing  { background:rgba(244,114,182,.13);border-color:rgba(244,114,182,.5); color:#f9a8d4; }
   .rsvp-designing:hover  { background:rgba(244,114,182,.27);box-shadow:0 8px 28px rgba(244,114,182,.3); }
 
-  /* ── MOBILE: tap to expand bottom sheet ── */
-  .ev-mobile-sheet {
-    position:fixed; inset:0; z-index:9999;
-    pointer-events:none;
-  }
-  .ev-mobile-backdrop {
-    position:absolute; inset:0;
-    background:rgba(0,0,0,0);
-    backdrop-filter:blur(0px);
-    transition:background .38s ease, backdrop-filter .38s ease;
-  }
-  .ev-mobile-backdrop.active {
-    background:rgba(0,0,0,.8);
-    backdrop-filter:blur(18px) saturate(.5);
-    pointer-events:all;
-  }
-  .ev-mobile-panel {
-    position:absolute; bottom:0; left:0; right:0;
-    border-radius:20px 20px 0 0;
-    background:var(--black);
-    max-height:88vh;
-    overflow-y:auto;
-    transform:translateY(100%);
-    transition:transform .44s cubic-bezier(.22,1,.36,1);
-    scrollbar-width:thin;
-    scrollbar-color:rgba(255,255,255,.1) transparent;
-  }
-  .ev-mobile-panel.active {
-    transform:translateY(0);
-    pointer-events:all;
-  }
-  .ev-mobile-img { position:relative; width:100%; aspect-ratio:16/9; overflow:hidden; flex-shrink:0; }
-  .ev-mobile-img::after { content:''; position:absolute; inset:0; background:linear-gradient(to bottom,transparent 50%,rgba(8,8,8,.9) 100%); }
-  .ev-mobile-body { padding:20px 22px 32px; }
-  .ev-mobile-handle { width:44px; height:4px; border-radius:2px; background:rgba(255,255,255,.2); margin:14px auto 20px; }
-
-  /* lock scroll when open */
+  /* lock body scroll when modal open */
   body.ev-locked { overflow:hidden; }
 `;
 
 // ─── Types & Data ─────────────────────────────────────────────────────────────
 interface Event {
-  _id:string; title:string; date:string; shortDescription:string;
-  venue:string; time:string; image:string; rsvplink:string; domain:string;
+  _id: string; title: string; date: string; shortDescription: string;
+  venue: string; time: string; image: string; rsvplink: string; domain: string;
 }
 
 const events: Event[] = [
-  {_id:"m1",title:"POSEIDON: The Ultimate Battle Beneath the Waves",date:"Mar 8–9, 2025",shortDescription:"Get ready for the most innovative and thrilling competition of the year: POSEIDON — the Aqua Robot Soccer War.\n\nRegister with your team (2 members each). Bots for the event will be provided to each team. Strategy meets instinct in this underwater robot soccer showdown.",venue:"Techno India University",time:"9 AM onwards",image:"/temp/29.jpeg",rsvplink:"https://forms.gle/K6qyX4hRTD7qMwww9",domain:"Mechmania"},
-  {_id:"m2",title:"POWER TRUSS: Building Bridges to Success",date:"Mar 8–9, 2025",shortDescription:"Harness the power of innovation and construction as you design, build, and test your very own bridge capable of supporting heavy loads.\n\nTeams of 2 use ice cream sticks, glue, and feviquick. Who can build the strongest bridge?",venue:"Techno India University",time:"12 PM onwards",image:"/temp/30.jpeg",rsvplink:"https://forms.gle/PuKjbGWrf7QHehPQ7",domain:"Mechmania"},
-  {_id:"m3",title:"Blast Off! The Ultimate Water Bottle Rocket Event",date:"Mar 10, 2025",shortDescription:"Get ready to launch your creativity sky-high as we delve into the thrilling world of DIY rocket science!\n\nWhether you're a novice or seasoned rocketeer, prepare for an unforgettable experience as we count down to lift-off.",venue:"Techno India University",time:"12 PM onwards",image:"/temp/31.jpeg",rsvplink:"https://forms.gle/McxZmZ1dfDfdrdfx8",domain:"Mechmania"},
-  {_id:"r1",title:"RoboWar 15kg: The Ultimate Battle of Steel and Strategy",date:"Mar 8–9, 2025",shortDescription:"Prepare for RoboWar 2025 — where engineering meets destruction in the most intense robotic showdown!\n\nCustom-built combat bots clash in a high-stakes battle of power, precision, and strategy. Only the toughest will withstand the chaos.",venue:"Techno India University",time:"12 PM onwards",image:"/temp/36.png",rsvplink:"https://forms.gle/jiYCQT8eHngnQhKm8",domain:"Robotics"},
-  {_id:"r2",title:"DOGE WAR: Forged in Steel, Tested in Battle! (8 kg)",date:"Mar 8–9, 2025",shortDescription:"Where Metal Clashes, Sparks Fly, and Champions Rise!\n\nStep into the ultimate battleground where engineering meets adrenaline. Feel the thunderous roar of motors and witness the precision of strategic robot combat.",venue:"Techno India University",time:"12 PM onwards",image:"/temp/42.jpeg",rsvplink:"https://forms.gle/jiYCQT8eHngnQhKm8",domain:"Robotics"},
-  {_id:"r3",title:"RoboSoccer: Where Innovation Meets the Game",date:"Mar 8–9, 2025",shortDescription:"Step onto the future of sports where cutting-edge robotics and high-energy competition collide!\n\nWatch autonomous robots dribble, pass, and score with unmatched precision and lightning speed.",venue:"Techno India University",time:"12 PM onwards",image:"/temp/35.png",rsvplink:"https://forms.gle/jiYCQT8eHngnQhKm8",domain:"Robotics"},
-  {_id:"r4",title:"Line Follower: Precision in Motion!",date:"Mar 9, 2025",shortDescription:"Watch autonomous robots navigate intricate paths with flawless precision, guided by advanced sensors and lightning-fast reflexes.\n\nThe result of months of innovation, programming, and problem-solving — in real-time competition.",venue:"Techno India University",time:"12 PM onwards",image:"/temp/43.jpeg",rsvplink:"https://forms.gle/jiYCQT8eHngnQhKm8",domain:"Robotics"},
-  {_id:"r5",title:"Death Race: Pushing the Limits of Innovation and Speed",date:"Mar 9, 2025",shortDescription:"Where Velocity Meets Strategy in the Ultimate Battle of Machines!\n\nAutonomous bots race through a relentless gauntlet — navigating sharp turns, leaping over obstacles, and dodging unforeseen challenges with split-second precision.",venue:"Techno India University",time:"12 PM onwards",image:"/temp/34.png",rsvplink:"https://forms.gle/jiYCQT8eHngnQhKm8",domain:"Robotics"},
-  {_id:"f1",title:"Scavenger Hunt: A Fun-Filled Adventure!",date:"Mar 8, 2025",shortDescription:"Race against the clock to find hidden clues and complete challenges!\n\nGather your team, wear your competitive shoes, and be prepared for a day of adventure and fun. The clock is ticking — can you solve it all?",venue:"Techno India University",time:"11 AM onwards",image:"/temp/20.jpeg",rsvplink:"https://docs.google.com/forms/d/e/1FAIpQLSdkRFR-T8sV58Zyu3kcD_XDctb1WA09AbLQ2-5Yn-adO7BqWQ/viewform",domain:"Fun Events"},
-  {_id:"f2",title:"Ultimate Food Eating Challenge!",date:"Mar 10, 2025",shortDescription:"Are You Hungry Enough to Be the Champion?\n\nEat as much as you can within the time limit. No leftovers, no mercy — every bite counts. Tap out, and you're out!",venue:"Techno India University",time:"12 PM onwards",image:"/temp/21.jpeg",rsvplink:"https://docs.google.com/forms/d/e/1FAIpQLScSR5lCKDNxqafEa5zxRNkiFGRLkPuvZflL5m9n9-IyDFUELw/viewform",domain:"Fun Events"},
-  {_id:"f3",title:"LIVE LUDO SHOWDOWN!",date:"Mar 9, 2025",shortDescription:"Roll the dice, make your moves, and outsmart your opponents in the ultimate Live Ludo Challenge!\n\nFast-paced, high-energy battles. Exciting cash prizes for winners. Don't just play — compete, win, and rule the board!",venue:"Techno India University",time:"1 PM onwards",image:"/temp/23.jpg",rsvplink:"https://docs.google.com/forms/d/e/1FAIpQLScZNiDp5xat-GKZSwtjRhuMN9ZSB_155rPv8Sa2RwT3I_maPg/viewform",domain:"Fun Events"},
-  {_id:"f4",title:"Superbike Showcase",date:"Mar 10, 2025",shortDescription:"Get up close with the finest superbikes, where engineering meets adrenaline!\n\nWitness sleek designs, cutting-edge technology, and the raw power that defines the ultimate riding experience.",venue:"Techno India University",time:"1 PM onwards",image:"/temp/22.jpg",rsvplink:"",domain:"Fun Events"},
-  {_id:"i1",title:"Pitch to Deck: Turn Ideas into Investments!",date:"Mar 9, 2025",shortDescription:"Have a game-changing startup idea? Pitch to Deck is your chance to present it to top CEOs, investors, and industry leaders.\n\nImpress the judges, win exciting cash prizes, and network with experts. Bring your vision to life!",venue:"Techno India University",time:"11 AM onwards",image:"/temp/26.jpeg",rsvplink:"https://forms.gle/EFs9WxEwBmwit5X69",domain:"Innovation"},
-  {_id:"g1",title:"Chess",date:"Mar 8–9, 2025",shortDescription:"Step into the arena of intellect and strategy — where every move counts and only the sharpest minds prevail!\n\nJoin the Ultimate Chess Tournament and prove your mastery over the board in high-stakes battles of wit.",venue:"Techno India University",time:"11 AM onwards",image:"/temp/25.jpeg",rsvplink:"https://forms.gle/6sb7NFdvrEzjj1eB9",domain:"Gaming"},
-  {_id:"g2",title:"FC'25",date:"Mar 8–10, 2025",shortDescription:"Step onto the virtual football pitch for high-stakes battles where skill and teamwork decide the champion.\n\nCompete against the best in real-time FIFA action. Do you have what it takes to lift the virtual trophy?",venue:"Techno India University",time:"11 AM onwards",image:"/temp/28.jpeg",rsvplink:"https://docs.google.com/forms/d/e/1FAIpQLSedjOYpg5ebu4PVxmPe15FITzX0FdpC9rTvFJnliFlGW5pl3Q/viewform",domain:"Gaming"},
-  {_id:"g3",title:"BGMI",date:"Mar 8–10, 2025",shortDescription:"Battlegrounds Mobile India: Survive, Conquer, Dominate!\n\nGear up, drop in, and battle your way to victory. Intense battle royale action — compete against the toughest squads and be the last one standing!",venue:"Techno India University",time:"11 AM onwards",image:"/temp/37.jpeg",rsvplink:"https://docs.google.com/forms/d/1Redi0zt980RhLk8Teh5IcxnT_HoLg_T79ZpoZMgf1cg/edit",domain:"Gaming"},
-  {_id:"g4",title:"Valorant",date:"Mar 8–10, 2025",shortDescription:"VALORANT: Aim. Strategize. Dominate!\n\nAssemble your squad, lock in your agents, and prepare for intense tactical 5v5 combat. Precision, teamwork, and strategy decide who controls the battlefield.",venue:"Techno India University",time:"11 AM onwards",image:"/temp/27.jpeg",rsvplink:"https://docs.google.com/forms/d/e/1FAIpQLSc0VDnlZwGQ0jEh2DZUVAy_2UZ6YxTrE3ry1ExXyH_Wz7gxug/viewform",domain:"Gaming"},
-  {_id:"g5",title:"Road To Valor",date:"Mar 9, 2025",shortDescription:"The battlefield awaits! Summon your army, devise your strategy, and lead your forces to glory.\n\nOnly the strongest commanders will rise in this ultimate real-time strategy tournament.",venue:"Techno India University",time:"11 AM onwards",image:"/temp/41.jpeg",rsvplink:"https://forms.gle/Ps5MxEfma7Y11ZCx7",domain:"Gaming"},
-  {_id:"g6",title:"Real Cricket 24",date:"Mar 8, 2025",shortDescription:"Step onto the virtual pitch and showcase your batting brilliance and bowling mastery!\n\nPrecision, strategy, and quick reflexes decide the true champion. Will you rise to the challenge?",venue:"Techno India University",time:"11 AM onwards",image:"/temp/40.jpeg",rsvplink:"https://forms.gle/rKSxkXFBquE49MFv8",domain:"Gaming"},
-  {_id:"g7",title:"Bullet Echo",date:"Mar 9, 2025",shortDescription:"Stealth, Strategy, Survival!\n\nStep into the shadows, team up, and eliminate your enemies. Use tactics, precision, and teamwork to outplay your opponents and be the last one standing.",venue:"Techno India University",time:"11 AM onwards",image:"/temp/39.jpeg",rsvplink:"https://forms.gle/WHXcZWd5WBivesrdA",domain:"Gaming"},
-  {_id:"g8",title:"Cookie Run",date:"Mar 8, 2025",shortDescription:"Dash, Dodge & Dominate!\n\nRun, jump, and outpace the competition. Speed, strategy, and quick reflexes determine who claims victory. The race is on!",venue:"Techno India University",time:"11 AM onwards",image:"/temp/38.jpeg",rsvplink:"https://forms.gle/igFAmSveq9RVHJnW6",domain:"Gaming"},
-  {_id:"c1",title:"Hackquest",date:"Mar 8–9, 2025",shortDescription:"Solve real-world problems in Healthcare, AI, Cybersecurity, Education, Blockchain, and more!\n\nTeam size: 1–4 members. Network with industry experts, tackle impactful challenges, and compete for exciting prizes.",venue:"Techno India University",time:"12 PM onwards",image:"/temp/24.png",rsvplink:"https://lemonade.social/e/AigjXHfi",domain:"Computing"},
-  {_id:"c2",title:"Webyard",date:"Mar 8, 2025",shortDescription:"Think You Can Turn Designs into Reality?\n\nFrontend making contest by Takshila: 2 hours, 2 webpages from given designs. Show off your dev skills and compete with the best minds on campus!",venue:"Techno India University",time:"11 AM onwards",image:"/temp/32.jpeg",rsvplink:"https://forms.gle/qgfGRCpK8rv9tsaa8",domain:"Computing"},
-  {_id:"c3",title:"Codex",date:"Mar 9, 2025",shortDescription:"Think You've Got What It Takes to Crack the Code?\n\nCodex by Takshila: 2 hours, 4 challenging questions. Prove you've got the brains to beat the toughest coding challenges!",venue:"Techno India University",time:"11 AM onwards",image:"/temp/33.jpeg",rsvplink:"https://forms.gle/qgfGRCpK8rv9tsaa8",domain:"Computing"},
-  {_id:"d1",title:"Cosplay",date:"Mar 10, 2025",shortDescription:"Step into a world where fantasy meets reality!\n\nFrom iconic heroes to legendary villains, witness stunning transformations as cosplayers bring their favourite characters to life with passion, creativity, and incredible craftsmanship.",venue:"Techno India University",time:"11 AM onwards",image:"/cosplay.jpg",rsvplink:"",domain:"Designing"},
+  {
+    _id: "m1",
+    title: "SKY BLAST: Launch Into The Future",
+    date: "Apr 17-18, 2026",
+    shortDescription: "Sky Blast is an exciting projectile theory-based competition that challenges participants’\n\n understanding of aerodynamics, projectile motion, precision, coordination, and strategy.",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/SKY BLAST.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLScfX7utk6ACVBwYwAGXrO8m7Rte1K1irpDBtU0RB9kVCCprXw/viewform",
+    domain: "Mechmania"
+  },
+
+  {
+    _id: "m2",
+    title: "SPLASH LEAGUE: Score the Waves",
+    date: "Apr 17-18, 2026",
+    shortDescription: "Splash League is an exciting water-based competition where teams showcase speed, precision, coordination, and strategy using remotely operated boats in a controlled environment.",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/SPLASH LEAGUE.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLSeX6fcfyJbvWdpOfRoOsSgrUiZqfvzpUPjEh-X5TEOZRIrtDA/viewform",
+    domain: "Mechmania"
+  },
+
+  {
+    _id: "m3",
+    title: "MECHNOVATE: The Ultimate Tech Expo 2026",
+    date: "Apr 17-18, 2026",
+    shortDescription: "howcase your innovation. Compete with the best. Build the future!",
+    venue: "Techno India University",
+    time: "10 AM onwards",
+    image: "/temp/MECHNOVATE.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLSfo5OKEc-ifWpCoG9yOcMZo9UbP09PVLpAqw_I82MY7CvMLCQ/viewform",
+    domain: "Mechmania"
+  },
+
+  {
+    _id: "r1",
+    title: "RoboWar 15kg: The Ultimate Battle of Steel and Strategy",
+    date: "April 17-18, 2026",
+    shortDescription: "Prepare for RoboWar 2025 — where engineering meets destruction in the most intense robotic showdown!\n\nCustom-built combat bots clash in a high-stakes battle of power, precision, and strategy. Only the toughest will withstand the chaos.",
+    venue: "Techno India University",
+    time: "10 AM onwards",
+    image: "/temp/R-15kg.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1FBy12bCEIRD8ETH46hfYHpxKPggLS2BevY4e3YTiok0/viewform?edit_requested=true",
+    domain: "Robotics"
+  },
+
+  {
+    _id: "r2",
+    title: "DOGE WAR: Forged in Steel, Tested in Battle! (8 kg)",
+    date: "April 17-18, 2026",
+    shortDescription: "Where Metal Clashes, Sparks Fly, and Champions Rise!\n\nStep into the ultimate battleground where engineering meets adrenaline. Feel the thunderous roar of motors and witness the precision of strategic robot combat.",
+    venue: "Techno India University",
+    time: "10 AM onwards",
+    image: "/temp/R-8kg.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1FBy12bCEIRD8ETH46hfYHpxKPggLS2BevY4e3YTiok0/viewform?edit_requested=true",
+    domain: "Robotics"
+  },
+
+  {
+    _id: "r3",
+    title: "RoboSoccer: Where Innovation Meets the Game",
+    date: "April 17-18, 2026",
+    shortDescription: "Step onto the future of sports where cutting-edge robotics and high-energy competition collide!\n\nWatch autonomous robots dribble, pass, and score with unmatched precision and lightning speed.",
+    venue: "Techno India University",
+    time: "10 AM onwards",
+    image: "/temp/R-Soccer.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1FBy12bCEIRD8ETH46hfYHpxKPggLS2BevY4e3YTiok0/viewform?edit_requested=true",
+    domain: "Robotics"
+  },
+
+  {
+    _id: "r4",
+    title: "Line Follower: Precision in Motion!",
+    date: "April 17-18, 2026",
+    shortDescription: "Watch autonomous robots navigate intricate paths with flawless precision, guided by advanced sensors and lightning-fast reflexes.\n\nThe result of months of innovation, programming, and problem-solving — in real-time competition.",
+    venue: "Techno India University",
+    time: "10 AM onwards",
+    image: "/temp/R-Line.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1FBy12bCEIRD8ETH46hfYHpxKPggLS2BevY4e3YTiok0/viewform?edit_requested=true",
+    domain: "Robotics"
+  },
+
+  {
+    _id: "r5",
+    title: "Death Race: Pushing the Limits of Innovation and Speed",
+    date: "April 17-18, 2026",
+    shortDescription: "Where Velocity Meets Strategy in the Ultimate Battle of Machines!\n\nAutonomous bots race through a relentless gauntlet — navigating sharp turns, leaping over obstacles, and dodging unforeseen challenges with split-second precision.",
+    venue: "Techno India University",
+    time: "10 AM onwards",
+    image: "/temp/R-DR.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1FBy12bCEIRD8ETH46hfYHpxKPggLS2BevY4e3YTiok0/viewform?edit_requested=true",
+    domain: "Robotics"
+  },
+
+  {
+    _id: "f1",
+    title: "Scavenger Hunt: A Fun-Filled Adventure!",
+    date: "April 18, 2026",
+    shortDescription: "Race against the clock to find hidden clues and complete challenges!\n\nGather your team, wear your competitive shoes, and be prepared for a day of adventure and fun. The clock is ticking — can you solve it all?",
+    venue: "Techno India University",
+    time: "10 AM onwards",
+    image: "/temp/FE-SH.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLSfsu76Zu8wjz4vuFayYmWEPgL5eD7wl610AHI6va0BwH4lKKw/viewform",
+    domain: "Fun Events"
+  },
+
+  {
+    _id: "f2",
+    title: "Ultimate Food Eating Challenge!",
+    date: "April 18,19 2026",
+    shortDescription: "Are You Hungry Enough to Be the Champion?\n\nEat as much as you can within the time limit. No leftovers, no mercy — every bite counts. Tap out, and you're out!",
+    venue: "Techno India University",
+    time: "10 AM onwards",
+    image: "/temp/F-FE.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLSebbcKtnf03x6E3rmNEAboIKd8SNLamI8F_x8yTWF4Lah-5fw/viewform",
+    domain: "Fun Events"
+  },
+
+  {
+    _id: "f3",
+    title: "Error 404: where logic fades… and instincts take over",
+    date: "April 17, 2026",
+    shortDescription: "Fun Events invites you into a space where thinking isn’t enough — you need clarity, control, and calm under pressure.",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/FE-E404.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLSe3biFoDgGPpBSGfhfvqLycmNzaNqB_nxnWxGcAUSBtS5bOQw/viewform",
+    domain: "Fun Events"
+  },
+
+  {
+    _id: "f4",
+    title: "Superbike Showcase",
+    date: "April 18, 2026",
+    shortDescription: "Get up close with the finest superbikes, where engineering meets adrenaline!\n\nWitness sleek designs, cutting-edge technology, and the raw power that defines the ultimate riding experience.",
+    venue: "Techno India University",
+    time: "3 PM onwards",
+    image: "/temp/F-SB.jpeg",
+    rsvplink: "",
+    domain: "Fun Events"
+  },
+
+  {
+    _id: "i1",
+    title: "Pitch to Deck: Turn Ideas into Investments!",
+    date: "17th-19th April, 2026",
+    shortDescription: "Have a game-changing startup idea? Pitch to Deck is your chance to present it to top CEOs, investors, and industry leaders.\n\nImpress the judges, win exciting cash prizes, and network with experts. Bring your vision to life!",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/26.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLSc9xzHkOAgT1oipSJKSPMQET7psNIrRYdha5AD0PbnH2lPI3g/viewform",
+    domain: "Innovation"
+  },
+
+  {
+    _id: "i2",
+    title: "CXO Round Table",
+    date: "19th April, 2026",
+    shortDescription: "The CXO Round Table is a dynamic team-based strategic simulation where participants step into the roles of top executives like CEO, CFO, CMO, and more.\n\nTeams will analyze real-world business scenarios, tackle challenges, and make high-stakes decisions that shape the future of their company. It’s a test of leadership, teamwork, and strategic thinking under pressure.",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/CXO Round Table.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLSewo86U0d0T7No7W1dQqj5sr_gb3T1UFE1R-HdpanGogcTrXQ/viewform",
+    domain: "Innovation"
+  },
+  {
+    _id: "i3",
+    title: "TRADE UP: Rise Through Smart Moves!",
+    date: "19th April, 2026",
+    shortDescription: "nnovation & Management presents TRADE UP, an intense solo challenge where strategy, timing, and decision-making define your success. Step into the world of trading and compete against others as you make calculated moves to grow your position.\n\nEach round brings new opportunities and risks. Analyze quickly, adapt your strategy, and make bold choices to stay ahead. The smarter your decisions, the higher you climb.",
+    venue: "Techno India University",
+    time: "9:00 AM – 3:30 PM",
+    image: "/temp/26.1.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/e/1FAIpQLSfb8k8xXL5CQYzWQG60JY-Q3WrjtN0nRv4qeuMUlTJbH7gLEw/viewform",
+    domain: "Innovation"
+  },
+
+  {
+    _id: "g1",
+    title: "Chess",
+    date: "17th April, 2026",
+    shortDescription: "Step into the arena of intellect and strategy — where every move counts and only the sharpest minds prevail!\n\nJoin the Ultimate Chess Tournament and prove your mastery over the board in high-stakes battles of wit.",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/G-CHESS.jpeg",
+    rsvplink: "",
+    domain: "Gaming"
+  },
+
+  {
+    _id: "g2",
+    title: "FC'25",
+    date: "17-18th April, 2026",
+    shortDescription: "Step onto the virtual football pitch for high-stakes battles where skill and teamwork decide the champion.\n\nCompete against the best in real-time FIFA action. Do you have what it takes to lift the virtual trophy?",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/G-FC.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1UV6r3hu2XGXrfR8IgqC3P4cezviTyMN71df6iOSrmT8/viewform?ts=69c438f4&edit_requested=true",
+    domain: "Gaming"
+  },
+
+  {
+    _id: "g3",
+    title: "BGMI",
+    date: "17th-19th April, 2026",
+    shortDescription: "Battlegrounds Mobile India: Survive, Conquer, Dominate!\n\nGear up, drop in, and battle your way to victory. Intense battle royale action — compete against the toughest squads and be the last one standing!",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/G-BGMI.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1ugkX3tqfpnSqDP1BSXkIyWfsaw8aSbc33FHfYg_CoEk/viewform?ts=69c78ace&edit_requested=true",
+    domain: "Gaming"
+  },
+
+  {
+    _id: "g4",
+    title: "Valorant",
+    date: "17th-19th April, 2026",
+    shortDescription: "VALORANT: Aim. Strategize. Dominate!\n\nAssemble your squad, lock in your agents, and prepare for intense tactical 5v5 combat. Precision, teamwork, and strategy decide who controls the battlefield.",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/G-Valo.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1vi4w1xpPnf29RsSfOv9k9VpKnQW3T5V71OWHeLhiNNg/viewform?ts=69c433de&edit_requested=true",
+    domain: "Gaming"
+  },
+
+
+
+  {
+    _id: "g6",
+    title: "FREE FIRE",
+    date: "17th-19th April, 2026",
+    shortDescription: "Gear up for intense battle royale action!\n\nAssemble your squad, drop in, and outplay your rivals in fast-paced, adrenaline-pumping matches. Strategy, skill, and survival decide the ultimate champion.",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/G-FF.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1vyJOw5Y4q9IS0R8Ou249Irei_-8AZ8e1fuypFK5JbSg/viewform?ts=69c7885d&edit_requested=true",
+    domain: "Gaming"
+  },
+
+  {
+    _id: "g7",
+    title: "EFOOTBALL SHOWDOWN",
+    date: "17th-19th April, 2026",
+    shortDescription: "EFOOTBALL SHOWDOWN: Rule the Pitch!\n\nExperience the thrill of professional football in this intense 1v1 tournament. Master skills, make split-second decisions, and dominate the competition to claim victory!",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/G-EF.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1qqbizVsYbzHzfoxcY9R666qjHb8cPyMAeCclzd1D_u0/viewform?ts=69c57ed1&edit_requested=true",
+    domain: "Gaming"
+  },
+
+  {
+    _id: "g8",
+    title: "CONTRA",
+    date: "17th-19th April, 2026",
+    shortDescription: "CONTRA: The Ultimate Showdown!\n\nExperience intense 1v1 combat where precision, strategy, and quick reflexes determine the winner. Outplay your opponents and claim victory in this thrilling showdown!",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/G-CONTRA.jpeg",
+    rsvplink: "",
+    domain: "Gaming"
+  },
+
+  {
+    _id: "g9",
+    title: "PACMAN",
+    date: "17th-19th April, 2026",
+    shortDescription: "PACMAN: The Ultimate Showdown!\n\nExperience intense 1v1 combat where precision, strategy, and quick reflexes determine the winner. Outplay your opponents and claim victory in this thrilling showdown!",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/G-PM.jpeg",
+    rsvplink: "",
+    domain: "Gaming"
+  },
+
+  {
+    _id: "g10",
+    title: "MORTAL KOMBAT",
+    date: "17th-19th April, 2026",
+    shortDescription: "MORTAL KOMBAT: The Ultimate Showdown!\n\nExperience intense 1v1 combat where precision, strategy, and quick reflexes determine the winner. Outplay your opponents and claim victory in this thrilling showdown!",
+    venue: "Techno India Unive  rsity",
+    time: "11 AM onwards",
+    image: "/temp/G-MK.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/13OBX5V8FqunhIGF-wQ6U88x9AoF9VJy7818cP92b6KE/viewform?ts=69c75df1&edit_requested=true",
+    domain: "Gaming"
+  },
+
+  {
+    _id: "g11",
+    title: "PHASMOPHOBIA",
+    date: "18th-19th April, 2026",
+    shortDescription: "PHASMOPHOBIA: ENTER A DARK, IMMERSIVE ENVIRONMENT WHERE YOU WILL INVESTIGATE PARANORMAL ACTIVITY, IDENTIFY THE GHOST, AND TRY TO SURVIVE THE HUNT. THIS IS NOT JUST A GAME—IT’S A LIVE HORROR EXPERIENCE FILLED WITH TENSION AND UNEXPECTED JUMPSCARES!",
+    venue: "Techno India Unive  rsity",
+    time: "11 AM onwards",
+    image: "/temp/G-P.jpeg",
+    rsvplink: "https://docs.google.com/forms/d/1yofLydTS7TcaK8JenA57OKxNvV3TaqhkXHI4all9zfw/viewform?ts=69c43417&edit_requested=true",
+    domain: "Gaming"
+  },
+
+
+
+
+  {
+    _id: "C1",
+    title: "Ship or Sink",
+    date: "17th-19th April, 2026",
+    shortDescription: "Ship or Sink: Navigate the Storm!\n\nTest your strategy and nerve in this thrilling survival challenge. Make critical decisions to keep your ship afloat while outsmarting opponents. Every choice matters — sink or sail to victory!",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/temp/G-SOS.jpeg",
+    rsvplink: "https://luma.com/ebif34tr",
+    domain: "Computing"
+  },
+
+
+
+
+
+  {
+    _id: "d1",
+    title: "Cosplay",
+    date: "Mar 10, 2025",
+    shortDescription: "Step into a world where fantasy meets reality!\n\nFrom iconic heroes to legendary villains, witness stunning transformations as cosplayers bring their favourite characters to life with passion, creativity, and incredible craftsmanship.",
+    venue: "Techno India University",
+    time: "11 AM onwards",
+    image: "/cosplay.jpg",
+    rsvplink: "",
+    domain: "Designing"
+  },
 ];
 
-const domainConfig: Record<string,{icon:string;cardClass:string;badgeClass:string;iconClass:string;titleColor:string;rsvpClass:string}> = {
-  Mechmania:   {icon:"⚙️", cardClass:"ec-mechmania",  badgeClass:"badge-mechmania",  iconClass:"icon-mechmania",  titleColor:"#fca5a5", rsvpClass:"rsvp-mechmania"},
-  Robotics:    {icon:"🤖", cardClass:"ec-robotics",   badgeClass:"badge-robotics",   iconClass:"icon-robotics",   titleColor:"#7dd3fc", rsvpClass:"rsvp-robotics"},
-  "Fun Events":{icon:"🎉", cardClass:"ec-fun",        badgeClass:"badge-fun",        iconClass:"icon-fun",        titleColor:"#86efac", rsvpClass:"rsvp-fun"},
-  Innovation:  {icon:"💡", cardClass:"ec-innovation", badgeClass:"badge-innovation", iconClass:"icon-innovation", titleColor:"#fdba74", rsvpClass:"rsvp-innovation"},
-  Gaming:      {icon:"🎮", cardClass:"ec-gaming",     badgeClass:"badge-gaming",     iconClass:"icon-gaming",     titleColor:"#d8b4fe", rsvpClass:"rsvp-gaming"},
-  Computing:   {icon:"💻", cardClass:"ec-computing",  badgeClass:"badge-computing",  iconClass:"icon-computing",  titleColor:"#5eead4", rsvpClass:"rsvp-computing"},
-  Designing:   {icon:"🎨", cardClass:"ec-designing",  badgeClass:"badge-designing",  iconClass:"icon-designing",  titleColor:"#f9a8d4", rsvpClass:"rsvp-designing"},
+// Domain logo
+
+const domainConfig: Record<string,
+
+  {
+    icon: string; cardClass: string;
+    badgeClass: string; iconClass: string;
+    titleColor: string;
+    rsvpClass: string
+  }> = {
+
+  Mechmania: {
+    icon: "/domain logo/Mechmania.png",
+    cardClass: "ec-mechmania",
+    badgeClass: "badge-mechmania",
+    iconClass: "icon-mechmania",
+    titleColor: "#fca5a5",
+    rsvpClass: "rsvp-mechmania"
+  },
+
+  Robotics: {
+    icon: "/domain logo/Robotics.png",
+    cardClass: "ec-robotics",
+    badgeClass: "badge-robotics",
+    iconClass: "icon-robotics",
+    titleColor: "#7dd3fc",
+    rsvpClass: "rsvp-robotics"
+  },
+
+  "Fun Events": {
+    icon: "/domain logo/Fun_Events.png",
+    cardClass: "ec-fun",
+    badgeClass: "badge-fun",
+    iconClass: "icon-fun",
+    titleColor: "#86efac",
+    rsvpClass: "rsvp-fun"
+  },
+
+  Innovation: {
+    icon: "/domain logo/I_M_Logo.png",
+    cardClass: "ec-innovation",
+    badgeClass: "badge-innovation",
+    iconClass: "icon-innovation",
+    titleColor: "#fdba74",
+    rsvpClass: "rsvp-innovation"
+  },
+
+  Gaming: {
+    icon: "/domain logo/BlackBirds.png",
+    cardClass: "ec-gaming",
+    badgeClass: "badge-gaming",
+    iconClass: "icon-gaming",
+    titleColor: "#d8b4fe",
+    rsvpClass: "rsvp-gaming"
+  },
+
+  Computing: {
+    icon: "/domain logo/COMPUTING LOGO.png",
+    cardClass: "ec-computing",
+    badgeClass: "badge-computing",
+    iconClass: "icon-computing",
+    titleColor: "#5eead4",
+    rsvpClass: "rsvp-computing"
+  },
+
+  Designing: {
+    icon: "/domain logo/GD_Logo_3.png",
+    cardClass: "ec-designing",
+    badgeClass: "badge-designing",
+    iconClass: "icon-designing",
+    titleColor: "#f9a8d4",
+    rsvpClass: "rsvp-designing"
+  },
 };
 
-const domainOrder = ["Mechmania","Robotics","Fun Events","Innovation","Gaming","Computing","Designing"];
+const domainOrder = ["Mechmania", "Robotics", "Fun Events", "Innovation", "Gaming", "Computing", "Designing"];
 
 // ─── Hooks ────────────────────────────────────────────────────────────────────
-function useReveal(threshold=0.1) {
+function useReveal(threshold = 0.1) {
   const ref = useRef<HTMLDivElement>(null);
-  useEffect(()=>{
-    const el=ref.current; if(!el) return;
-    const obs=new IntersectionObserver(([e])=>{if(e.isIntersecting){el.classList.add('vis');obs.unobserve(el);}},{threshold});
-    obs.observe(el); return ()=>obs.disconnect();
-  },[threshold]);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) { el.classList.add('vis'); obs.unobserve(el); } }, { threshold });
+    obs.observe(el); return () => obs.disconnect();
+  }, [threshold]);
   return ref;
 }
 
-function Counter({end,label}:{end:number;label:string}) {
-  const [val,setVal]=useState(0);
-  const ref=useRef<HTMLDivElement>(null);
-  useEffect(()=>{
-    const el=ref.current; if(!el) return;
-    const obs=new IntersectionObserver(([e])=>{
-      if(!e.isIntersecting) return;
-      let cur=0;
-      const step=()=>{cur+=Math.max(1,Math.ceil((end-cur)/14));if(cur>=end){setVal(end);return;}setVal(cur);requestAnimationFrame(step);};
+function Counter({ end, label }: { end: number; label: string }) {
+  const [val, setVal] = useState(0);
+  const ref = useRef<HTMLDivElement>(null);
+  useEffect(() => {
+    const el = ref.current; if (!el) return;
+    const obs = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      let cur = 0;
+      const step = () => { cur += Math.max(1, Math.ceil((end - cur) / 14)); if (cur >= end) { setVal(end); return; } setVal(cur); requestAnimationFrame(step); };
       requestAnimationFrame(step); obs.unobserve(el);
-    },{threshold:.5});
-    obs.observe(el); return ()=>obs.disconnect();
-  },[end]);
+    }, { threshold: .5 });
+    obs.observe(el); return () => obs.disconnect();
+  }, [end]);
   return (
     <div ref={ref} className="ev-stat">
       <div className="ev-stat-n">{val}+</div>
@@ -413,59 +819,67 @@ function Counter({end,label}:{end:number;label:string}) {
   );
 }
 
-// ─── Hover Expand Panel (desktop) ─────────────────────────────────────────────
-// The jitter fix: the expand panel itself also calls onPanelEnter/onPanelLeave
-// so moving the mouse from the card INTO the panel doesn't trigger a close.
-// A small debounce timer (80ms) absorbs the brief gap between card-leave and panel-enter.
-function ExpandPanel({event, onPanelEnter, onPanelLeave}:{
-  event:Event|null;
-  onPanelEnter:()=>void;
-  onPanelLeave:()=>void;
+// ─── Shared detail block (used by both desktop panel & mobile modal) ──────────
+function EventDetail({ event, cfg }: { event: Event; cfg: typeof domainConfig[string] }) {
+  return (
+    <>
+      <div className={`ev-expand-tag ${cfg.badgeClass}`}>
+        <Image src={cfg.icon} alt={event.domain} width={16} height={16} style={{ objectFit: 'contain', display: 'inline-block', verticalAlign: 'middle' }} />
+        {event.domain === "Innovation" ? "Innovation & Management" : event.domain}
+      </div>
+      <div className="ev-expand-title">{event.title}</div>
+      <div className="ev-expand-desc">{event.shortDescription}</div>
+      <div className="ev-expand-meta">
+        <div className="ev-expand-meta-row"><BsCalendar3 size={13} />{event.date}</div>
+        <div className="ev-expand-meta-row"><BiTime size={13} />{event.time}</div>
+        <div className="ev-expand-meta-row"><MdOutlineLocationOn size={14} />{event.venue}</div>
+      </div>
+      {event.rsvplink
+        ? <Link href={event.rsvplink} target="_blank" rel="noopener noreferrer" className={`ev-expand-rsvp ${cfg.rsvpClass}`}>RSVP Now <HiArrowRight size={14} /></Link>
+        : <div className="ev-expand-no-rsvp">Registration Closed</div>
+      }
+    </>
+  );
+}
+
+// ─── Desktop hover expand panel ───────────────────────────────────────────────
+function ExpandPanel({ event, onPanelEnter, onPanelLeave }: {
+  event: Event | null;
+  onPanelEnter: () => void;
+  onPanelLeave: () => void;
 }) {
   const [active, setActive] = useState(false);
-  const [current, setCurrent] = useState<Event|null>(null);
-  const timerRef = useRef<ReturnType<typeof setTimeout>|null>(null);
+  const [current, setCurrent] = useState<Event | null>(null);
+  const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  useEffect(()=>{
-    if(event) {
-      if(timerRef.current) clearTimeout(timerRef.current);
+  useEffect(() => {
+    if (event) {
+      if (timerRef.current) clearTimeout(timerRef.current);
       setCurrent(event);
-      requestAnimationFrame(()=>requestAnimationFrame(()=>setActive(true)));
+      requestAnimationFrame(() => requestAnimationFrame(() => setActive(true)));
     } else {
       setActive(false);
-      timerRef.current = setTimeout(()=>setCurrent(null), 420);
+      timerRef.current = setTimeout(() => setCurrent(null), 420);
     }
-    return ()=>{ if(timerRef.current) clearTimeout(timerRef.current); };
-  },[event]);
+    return () => { if (timerRef.current) clearTimeout(timerRef.current); };
+  }, [event]);
 
   const cfg = current ? (domainConfig[current.domain] ?? domainConfig["Mechmania"]) : null;
 
   return (
     <>
-      <div className={`ev-expand-backdrop ${active?'active':''}`}/>
-      <div
-        className={`ev-expand ${active?'active':''}`}
-        onMouseEnter={onPanelEnter}
-        onMouseLeave={onPanelLeave}
-      >
+      <div className={`ev-expand-backdrop ${active ? 'active' : ''}`} />
+      <div className={`ev-expand ${active ? 'active' : ''}`} onMouseEnter={onPanelEnter} onMouseLeave={onPanelLeave}>
         {current && cfg && (
           <>
+            {/* LEFT — full image */}
             <div className="ev-expand-img">
-              <Image src={current.image} alt={current.title} fill sizes="430px" style={{objectFit:'cover',objectPosition:'center'}}/>
+              <Image src={current.image} alt={current.title} fill sizes="470px"
+                style={{ objectFit: 'cover', objectPosition: 'center' }} />
             </div>
+            {/* RIGHT — scrollable details */}
             <div className="ev-expand-info">
-              <div className={`ev-expand-tag ${cfg.badgeClass}`}>{cfg.icon} {current.domain==="Innovation"?"Innovation & Management":current.domain}</div>
-              <div className="ev-expand-title">{current.title}</div>
-              <div className="ev-expand-desc">{current.shortDescription}</div>
-              <div className="ev-expand-meta">
-                <div className="ev-expand-meta-row"><BsCalendar3 size={13}/>{current.date}</div>
-                <div className="ev-expand-meta-row"><BiTime size={13}/>{current.time}</div>
-                <div className="ev-expand-meta-row"><MdOutlineLocationOn size={14}/>{current.venue}</div>
-              </div>
-              {current.rsvplink
-                ? <Link href={current.rsvplink} target="_blank" rel="noopener noreferrer" className={`ev-expand-rsvp ${cfg.rsvpClass}`}>RSVP Now <HiArrowRight size={14}/></Link>
-                : <div className="ev-expand-no-rsvp">Registration Closed</div>
-              }
+              <EventDetail event={current} cfg={cfg} />
             </div>
           </>
         )}
@@ -474,90 +888,94 @@ function ExpandPanel({event, onPanelEnter, onPanelLeave}:{
   );
 }
 
-// ─── Mobile Sheet (tap) ───────────────────────────────────────────────────────
-function MobileSheet({event, onClose}:{event:Event|null; onClose:()=>void}) {
+// ─── Mobile fullscreen modal ───────────────────────────────────────────────────
+// Full-width image fixed at top, all details scrollable below
+function MobileModal({ event, onClose }: { event: Event | null; onClose: () => void }) {
   const [active, setActive] = useState(false);
-  const [current, setCurrent] = useState<Event|null>(null);
+  const [current, setCurrent] = useState<Event | null>(null);
   const cfg = current ? (domainConfig[current.domain] ?? domainConfig["Mechmania"]) : null;
 
-  useEffect(()=>{
-    if(event){
+  useEffect(() => {
+    if (event) {
       setCurrent(event);
       document.body.classList.add('ev-locked');
-      requestAnimationFrame(()=>requestAnimationFrame(()=>setActive(true)));
+      requestAnimationFrame(() => requestAnimationFrame(() => setActive(true)));
     } else {
       setActive(false);
-      setTimeout(()=>{ setCurrent(null); document.body.classList.remove('ev-locked'); }, 440);
+      setTimeout(() => { setCurrent(null); document.body.classList.remove('ev-locked'); }, 450);
     }
-    return ()=>document.body.classList.remove('ev-locked');
-  },[event]);
+    return () => document.body.classList.remove('ev-locked');
+  }, [event]);
 
-  const close = useCallback(()=>{
+  const close = useCallback(() => {
     setActive(false);
-    setTimeout(onClose, 440);
-  },[onClose]);
+    setTimeout(onClose, 450);
+  }, [onClose]);
 
-  useEffect(()=>{
-    const h=(e:KeyboardEvent)=>{if(e.key==='Escape') close();};
-    window.addEventListener('keydown',h);
-    return ()=>window.removeEventListener('keydown',h);
-  },[close]);
+  useEffect(() => {
+    const h = (e: KeyboardEvent) => { if (e.key === 'Escape') close(); };
+    window.addEventListener('keydown', h);
+    return () => window.removeEventListener('keydown', h);
+  }, [close]);
 
-  if(!current || !cfg) return null;
+  if (!current || !cfg) return null;
 
   return (
-    <div className="ev-mobile-sheet">
-      <div className={`ev-mobile-backdrop ${active?'active':''}`} onClick={close}/>
-      <div className={`ev-mobile-panel ${active?'active':''}`}>
-        <div className="ev-mobile-handle"/>
-        <div className="ev-mobile-img">
-          <Image src={current.image} alt={current.title} fill sizes="100vw" style={{objectFit:'cover',objectPosition:'center'}}/>
+    <>
+      {/* Backdrop — separate from modal so clicking it closes */}
+      <div
+        className={`ev-modal-overlay ${active ? 'active' : ''}`}
+        onClick={close}
+      />
+      {/* Modal sheet */}
+      <div className={`ev-modal ${active ? 'active' : ''}`}>
+        {/* Drag handle */}
+        <div className="ev-modal-handle" />
+        {/* Close button */}
+        <button className="ev-modal-close" onClick={close} aria-label="Close">✕</button>
+        {/* Full-width image — always visible at top */}
+        <div className="ev-modal-img">
+          <Image
+            src={current.image} alt={current.title} fill
+            sizes="100vw"
+            style={{ objectFit: 'cover', objectPosition: 'center' }}
+          />
         </div>
-        <div className="ev-mobile-body">
-          <div className={`ev-expand-tag ${cfg.badgeClass}`} style={{marginBottom:12}}>{cfg.icon} {current.domain==="Innovation"?"Innovation & Management":current.domain}</div>
-          <div className="ev-expand-title">{current.title}</div>
-          <div className="ev-expand-desc">{current.shortDescription}</div>
-          <div className="ev-expand-meta">
-            <div className="ev-expand-meta-row"><BsCalendar3 size={13}/>{current.date}</div>
-            <div className="ev-expand-meta-row"><BiTime size={13}/>{current.time}</div>
-            <div className="ev-expand-meta-row"><MdOutlineLocationOn size={14}/>{current.venue}</div>
-          </div>
-          {current.rsvplink
-            ? <Link href={current.rsvplink} target="_blank" rel="noopener noreferrer" className={`ev-expand-rsvp ${cfg.rsvpClass}`}>RSVP Now <HiArrowRight size={14}/></Link>
-            : <div className="ev-expand-no-rsvp">Registration Closed</div>
-          }
+        {/* All details scroll below */}
+        <div className="ev-modal-body">
+          <EventDetail event={current} cfg={cfg} />
         </div>
       </div>
-    </div>
+    </>
   );
 }
 
 // ─── EventCard ────────────────────────────────────────────────────────────────
-function EventCard({event, onHover, onLeave, onTap}:{
-  event:Event;
-  onHover:(e:Event)=>void;
-  onLeave:()=>void;
-  onTap:(e:Event)=>void;
+function EventCard({ event, onHover, onLeave, onTap }: {
+  event: Event;
+  onHover: (e: Event) => void;
+  onLeave: () => void;
+  onTap: (e: Event) => void;
 }) {
   const cfg = domainConfig[event.domain] ?? domainConfig["Mechmania"];
   return (
     <div
       className="ec-wrap"
-      onMouseEnter={()=>onHover(event)}
+      onMouseEnter={() => onHover(event)}
       onMouseLeave={onLeave}
-      onClick={()=>onTap(event)}
+      onClick={() => onTap(event)}
     >
       <div className={`ec ${cfg.cardClass}`}>
         <div className="ec-img">
           <Image src={event.image} alt={event.title} fill sizes="(max-width:640px) 100vw, 33vw"
-            style={{objectFit:'cover',objectPosition:'center'}}/>
-          <div className="ec-date-badge"><BsCalendar3 size={9} style={{display:'inline',marginRight:4}}/>{event.date}</div>
+            style={{ objectFit: 'cover', objectPosition: 'center' }} />
+          <div className="ec-date-badge"><BsCalendar3 size={9} style={{ display: 'inline', marginRight: 4 }} />{event.date}</div>
         </div>
         <div className="ec-body">
           <div className="ec-title">{event.title}</div>
           <div className="ec-desc-short">{event.shortDescription.split('\n')[0]}</div>
-          <div className="ec-meta-row"><MdOutlineLocationOn size={13}/>{event.venue}</div>
-          <div className="ec-meta-row"><BiTime size={12}/>{event.time}</div>
+          <div className="ec-meta-row"><MdOutlineLocationOn size={13} />{event.venue}</div>
+          <div className="ec-meta-row"><BiTime size={12} />{event.time}</div>
         </div>
       </div>
     </div>
@@ -565,27 +983,29 @@ function EventCard({event, onHover, onLeave, onTap}:{
 }
 
 // ─── DomainBlock ──────────────────────────────────────────────────────────────
-function DomainBlock({domain, onHover, onLeave, onTap}:{
-  domain:string;
-  onHover:(e:Event)=>void;
-  onLeave:()=>void;
-  onTap:(e:Event)=>void;
+function DomainBlock({ domain, onHover, onLeave, onTap }: {
+  domain: string;
+  onHover: (e: Event) => void;
+  onLeave: () => void;
+  onTap: (e: Event) => void;
 }) {
   const headerRef = useReveal(0.1);
-  const gridRef   = useReveal(0.07);
+  const gridRef = useReveal(0.07);
   const cfg = domainConfig[domain];
-  const domEvents = events.filter(e=>e.domain===domain);
-  if(!domEvents.length) return null;
+  const domEvents = events.filter(e => e.domain === domain);
+  if (!domEvents.length) return null;
   return (
     <div className="dom-section">
       <div ref={headerRef} className="rv dom-header">
-        <div className={`dom-icon ${cfg.iconClass}`}>{cfg.icon}</div>
-        <div className="dom-title" style={{color:cfg.titleColor}}>{domain==="Innovation"?"Innovation & Management":domain}</div>
-        <div className={`dom-count ${cfg.badgeClass}`}>{domEvents.length} event{domEvents.length>1?'s':''}</div>
+        <div className={`dom-icon ${cfg.iconClass}`}>
+          <Image src={cfg.icon} alt={domain} width={26} height={26} style={{ objectFit: 'contain' }} />
+        </div>
+        <div className="dom-title" style={{ color: cfg.titleColor }}>{domain === "Innovation" ? "Innovation & Management" : domain}</div>
+        <div className={`dom-count ${cfg.badgeClass}`}>{domEvents.length} event{domEvents.length > 1 ? 's' : ''}</div>
       </div>
       <div ref={gridRef} className="sg ev-grid">
-        {domEvents.map(ev=>(
-          <EventCard key={ev._id} event={ev} onHover={onHover} onLeave={onLeave} onTap={onTap}/>
+        {domEvents.map(ev => (
+          <EventCard key={ev._id} event={ev} onHover={onHover} onLeave={onLeave} onTap={onTap} />
         ))}
       </div>
     </div>
@@ -594,75 +1014,69 @@ function DomainBlock({domain, onHover, onLeave, onTap}:{
 
 // ─── Events Page ──────────────────────────────────────────────────────────────
 function Events() {
-  const heroRef  = useReveal(0.04);
+  const heroRef = useReveal(0.04);
   const statsRef = useReveal(0.08);
 
   // Desktop hover state — debounced so moving mouse card→panel doesn't flicker
-  const [hovered, setHovered] = useState<Event|null>(null);
-  const [tapped,  setTapped]  = useState<Event|null>(null);
+  const [hovered, setHovered] = useState<Event | null>(null);
+  const [tapped, setTapped] = useState<Event | null>(null);
   const [isTouch, setIsTouch] = useState(false);
-  useEffect(()=>{ setIsTouch(window.matchMedia('(hover:none)').matches); },[]);
+  useEffect(() => { setIsTouch(window.matchMedia('(hover:none)').matches); }, []);
 
-  const leaveTimer = useRef<ReturnType<typeof setTimeout>|null>(null);
+  const leaveTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const cancelLeave = useCallback(()=>{
-    if(leaveTimer.current){ clearTimeout(leaveTimer.current); leaveTimer.current=null; }
-  },[]);
+  const cancelLeave = useCallback(() => {
+    if (leaveTimer.current) { clearTimeout(leaveTimer.current); leaveTimer.current = null; }
+  }, []);
 
-  const scheduleLeave = useCallback(()=>{
+  const scheduleLeave = useCallback(() => {
     cancelLeave();
-    leaveTimer.current = setTimeout(()=>setHovered(null), 80);
-  },[cancelLeave]);
+    leaveTimer.current = setTimeout(() => setHovered(null), 80);
+  }, [cancelLeave]);
 
-  const handleHover       = useCallback((ev:Event)=>{ if(isTouch) return; cancelLeave(); setHovered(ev); },[isTouch,cancelLeave]);
-  const handleLeave       = useCallback(()=>{ if(!isTouch) scheduleLeave(); },[isTouch,scheduleLeave]);
-  const handlePanelEnter  = useCallback(()=>{ cancelLeave(); },[cancelLeave]);
-  const handlePanelLeave  = useCallback(()=>{ scheduleLeave(); },[scheduleLeave]);
-  const handleTap         = useCallback((ev:Event)=>{ if(isTouch) setTapped(ev); },[isTouch]);
+  const handleHover = useCallback((ev: Event) => { if (isTouch) return; cancelLeave(); setHovered(ev); }, [isTouch, cancelLeave]);
+  const handleLeave = useCallback(() => { if (!isTouch) scheduleLeave(); }, [isTouch, scheduleLeave]);
+  const handlePanelEnter = useCallback(() => { cancelLeave(); }, [cancelLeave]);
+  const handlePanelLeave = useCallback(() => { scheduleLeave(); }, [scheduleLeave]);
+  const handleTap = useCallback((ev: Event) => { if (isTouch) setTapped(ev); }, [isTouch]);
 
   return (
     <>
-      <style dangerouslySetInnerHTML={{__html:styles}}/>
+      <style dangerouslySetInnerHTML={{ __html: styles }} />
       <div className="ev-section">
-        <div className="ev-bg-grid"/>
-        <div className="ev-orb ev-orb-1"/>
-        <div className="ev-orb ev-orb-2"/>
-        <div className="ev-scan"/>
+        <div className="ev-bg-grid" />
+        <div className="ev-orb ev-orb-1" />
+        <div className="ev-orb ev-orb-2" />
+        <div className="ev-scan" />
 
         <div className="ev-inner">
           {/* HERO */}
           <div ref={heroRef} className="rv ev-hero">
             <div className="ev-eyebrow">Techno Vivarta</div>
-            <h1 className="ev-h1">Our<br/><span>Events.</span></h1>
-            <div className="ev-rule"><div className="ev-rule-dot"/></div>
+            <h1 className="ev-h1">Our<br /><span>Events.</span></h1>
+            <div className="ev-rule"><div className="ev-rule-dot" /></div>
             <p className="ev-hero-p">
-              Thrilling competitions across robotics, gaming, innovation, and more. Hover any event card to expand full details — tap on mobile.
+              Thrilling competitions across Robotics, Gaming, Innovation, and more.
             </p>
           </div>
 
-          {/* STATS */}
-          <div ref={statsRef} className="rv ev-stats">
-            <Counter end={25} label="Total Events"/>
-            <Counter end={7}  label="Domains"/>
-            <Counter end={3}  label="Days"/>
-            <Counter end={100} label="Participants"/>
-          </div>
+
 
           {/* DOMAIN SECTIONS */}
-          {domainOrder.map((d,i)=>(
+          {domainOrder.map((d, i) => (
             <div key={d}>
-              {i>0 && <div className="ev-divider"><div className="ev-divider-dot"/></div>}
-              <DomainBlock domain={d} onHover={handleHover} onLeave={handleLeave} onTap={handleTap}/>
+              {i > 0 && <div className="ev-divider"><div className="ev-divider-dot" /></div>}
+              <DomainBlock domain={d} onHover={handleHover} onLeave={handleLeave} onTap={handleTap} />
             </div>
           ))}
         </div>
       </div>
 
       {/* Desktop hover expand — panel keeps hover alive via onPanelEnter/Leave */}
-      {!isTouch && <ExpandPanel event={hovered} onPanelEnter={handlePanelEnter} onPanelLeave={handlePanelLeave}/>}
+      {!isTouch && <ExpandPanel event={hovered} onPanelEnter={handlePanelEnter} onPanelLeave={handlePanelLeave} />}
 
-      {/* Mobile tap sheet */}
-      {isTouch && <MobileSheet event={tapped} onClose={()=>setTapped(null)}/>}
+      {/* Mobile tap modal — full image top, details below */}
+      {isTouch && <MobileModal event={tapped} onClose={() => setTapped(null)} />}
     </>
   );
 }
