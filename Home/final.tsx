@@ -906,7 +906,6 @@ const navLinks = [
   { href: '/events', label: 'Events' },
   { href: '/pre-events', label: 'Pre Events' },
   { href: '/team', label: 'Team' },
-  { href: '/blogs', label: 'Blogs' },
   { href: '/contact', label: 'Contact' },
 ]
 
@@ -1165,40 +1164,8 @@ export default function Home() {
 
         <div className="hp-div"><div className="hp-div-dot" /></div>
 
-        {/* ══ EVENTS PREVIEW ══ */}
-        <section className="hp-section">
-          <div className="hp-inner">
-            <div ref={eventsHdr} className="rv">
-              <div className="sec-label">Upcoming</div>
-              <h2 className="sec-h2">Featured <span>events</span></h2>
-              <p className="sec-sub">Reserve your spot and be part of the action.</p>
-            </div>
-            <div ref={eventsRef} className="sg events-grid">
-              {events.map(ev => (
-                <div key={ev._id} className="event-card">
-                  <div className="event-img">
-                    <Image src={ev.image} alt={ev.title} fill sizes="(max-width:640px) 100vw, 33vw" style={{ objectFit: 'cover' }} />
-                  </div>
-                  <div className="event-body">
-                    <div className="event-title">{ev.title}</div>
-                    <div className="event-meta">
-                      <div className="event-meta-row"><BiTime size={12} />{ev.time} · {ev.date}</div>
-                      <div className="event-meta-row"><MdOutlineLocationOn size={13} />{ev.venue}</div>
-                    </div>
-                    <Link href={ev.rsvplink} target="_blank" rel="noopener noreferrer" className="event-rsvp">
-                      RSVP Now <HiArrowRight size={12} />
-                    </Link>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="view-all-wrap">
-              <Link href="/events" className="view-all-btn">View All Events <HiArrowRight size={14} /></Link>
-            </div>
-          </div>
-        </section>
 
-        <div className="hp-div"><div className="hp-div-dot" /></div>
+
 
         {/* ══ CONNECT ══ */}
         <section className="hp-section">
@@ -1233,4 +1200,4 @@ export default function Home() {
       </div>
     </>
   )
-    }
+}
